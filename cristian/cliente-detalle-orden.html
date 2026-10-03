@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis órdenes · TecnoFix Dolores</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-stone-100 text-stone-800">
+  <!-- Barra de navegación del cliente -->
+  <header class="border-b border-stone-200 bg-stone-100 text-stone-800">
+    <nav class="mx-auto flex max-w-5xl items-center justify-between p-4">
+      <span class="text-lg font-semibold">TecnoFix Dolores</span>
+      <ul class="flex gap-6 text-sm">
+        <li><a href="cliente-mis-ordenes.html" class="font-medium text-indigo-700">Mis órdenes</a></li>
+      </ul>
+      <a href="auth-login.html" class="rounded-lg border border-stone-300 px-4 py-2 text-sm text-stone-800 transition hover:bg-stone-200">
+        Cerrar sesión
+      </a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-5xl space-y-6 p-4 py-8">
+    <div>
+      <h1 class="text-2xl font-semibold">Mis órdenes</h1>
+      <p class="mt-1 text-sm text-stone-500">Consulta el estado de tus equipos en el taller.</p>
+    </div>
+
+    <!-- Tabla de órdenes del cliente (datos de ejemplo) -->
+    <section class="overflow-x-auto rounded-xl border border-stone-200 bg-white shadow-sm">
+      <table class="w-full text-left text-sm">
+        <caption class="sr-only">Órdenes de servicio del cliente</caption>
+        <thead class="border-b border-stone-200 text-stone-500">
+          <tr>
+            <th scope="col" class="p-4 font-medium">Folio</th>
+            <th scope="col" class="p-4 font-medium">Equipo</th>
+            <th scope="col" class="p-4 font-medium">Estado</th>
+            <th scope="col" class="p-4 font-medium">Recepción</th>
+            <th scope="col" class="p-4 font-medium">Entrega estimada</th>
+            <th scope="col" class="p-4 font-medium">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-stone-100">
+
+          <!-- En revisión: hay una cotización esperando respuesta -->
+          <tr class="hover:bg-stone-50">
+            <td class="p-4 font-medium">1061</td>
+            <td class="p-4">Celular Samsung Galaxy A54</td>
+            <td class="p-4">
+              <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">En revisión</span>
+            </td>
+            <td class="p-4">29 sep</td>
+            <td class="p-4">3 oct</td>
+            <td class="p-4">
+              <div class="flex flex-wrap items-center gap-3">
+                <a href="cliente-detalle-orden.html" class="font-medium text-indigo-700 hover:text-indigo-600">Ver detalle</a>
+                <a href="../bryan/cliente-aprobar-cotizacion.html" class="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Revisar cotización</a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Arreglando -->
+          <tr class="hover:bg-stone-50">
+            <td class="p-4 font-medium">1058</td>
+            <td class="p-4">Laptop HP Pavilion 15</td>
+            <td class="p-4">
+              <span class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-800">Arreglando</span>
+            </td>
+            <td class="p-4">26 sep</td>
+            <td class="p-4">4 oct</td>
+            <td class="p-4">
+              <a href="cliente-detalle-orden.html" class="font-medium text-indigo-700 hover:text-indigo-600">Ver detalle</a>
+            </td>
+          </tr>
+
+          <!-- Recibido -->
+          <tr class="hover:bg-stone-50">
+            <td class="p-4 font-medium">1063</td>
+            <td class="p-4">Laptop Dell Inspiron 14</td>
+            <td class="p-4">
+              <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">Recibido</span>
+            </td>
+            <td class="p-4">2 oct</td>
+            <td class="p-4">9 oct</td>
+            <td class="p-4">
+              <a href="cliente-detalle-orden.html" class="font-medium text-indigo-700 hover:text-indigo-600">Ver detalle</a>
+            </td>
+          </tr>
+
+          <!-- Rechazado: el cliente no aprobó la cotización -->
+          <tr class="hover:bg-stone-50">
+            <td class="p-4 font-medium">1052</td>
+            <td class="p-4">Celular Motorola G32</td>
+            <td class="p-4">
+              <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-800">Rechazado</span>
+            </td>
+            <td class="p-4">18 sep</td>
+            <td class="p-4">—</td>
+            <td class="p-4">
+              <a href="cliente-detalle-orden.html" class="font-medium text-indigo-700 hover:text-indigo-600">Ver detalle</a>
+            </td>
+          </tr>
+
+          <!-- Entregado: ya se puede calificar el servicio -->
+          <tr class="hover:bg-stone-50">
+            <td class="p-4 font-medium">1049</td>
+            <td class="p-4">Tablet Lenovo Tab M10</td>
+            <td class="p-4">
+              <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800">Entregado</span>
+            </td>
+            <td class="p-4">15 sep</td>
+            <td class="p-4">20 sep</td>
+            <td class="p-4">
+              <div class="flex flex-wrap items-center gap-3">
+                <a href="cliente-detalle-orden.html" class="font-medium text-indigo-700 hover:text-indigo-600">Ver detalle</a>
+                <a href="../bryan/cliente-calificar-servicio.html" class="font-medium text-indigo-700 hover:text-indigo-600">Calificar servicio</a>
+              </div>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

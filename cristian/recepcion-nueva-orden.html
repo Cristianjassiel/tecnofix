@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nueva orden · TecnoFix Dolores</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-stone-100 text-stone-800">
+  <!-- Barra de navegación de la recepcionista -->
+  <header class="border-b border-stone-200 bg-stone-100 text-stone-800">
+    <nav class="mx-auto flex max-w-5xl items-center justify-between p-4">
+      <span class="text-lg font-semibold">TecnoFix Dolores</span>
+      <ul class="hidden gap-4 text-sm md:flex lg:gap-6">
+        <li><a href="recepcion-nueva-orden.html" class="font-medium text-indigo-700">Nueva orden</a></li>
+        <li><a href="../bryan/recepcion-clientes.html" class="hover:text-indigo-600">Clientes</a></li>
+        <li><a href="../daniel/recepcion-equipos.html" class="hover:text-indigo-600">Equipos</a></li>
+        <li><a href="../daniel/recepcion-buscar-ordenes.html" class="hover:text-indigo-600">Buscar órdenes</a></li>
+        <li><a href="../bryan/recepcion-entrega-cobro.html" class="hover:text-indigo-600">Entrega y cobro</a></li>
+      </ul>
+      <a href="auth-login.html" class="rounded-lg border border-stone-300 px-4 py-2 text-sm text-stone-800 transition hover:bg-stone-200">
+        Cerrar sesión
+      </a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-5xl space-y-6 p-4 py-8">
+    <h1 class="text-2xl font-semibold">Nueva orden de servicio</h1>
+
+    <!-- En Django este formulario usa method="post" y enctype="multipart/form-data" (por las fotos).
+         Aquí usa GET solo para poder navegar a la pantalla del ticket en la maqueta. -->
+    <form action="recepcion-ticket.html" method="get" class="space-y-6">
+
+      <!-- Cliente -->
+      <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+        <h2 class="text-xl font-semibold">Cliente</h2>
+
+        <div class="mt-4">
+          <label for="cliente-buscar" class="block text-sm text-stone-500">Buscar cliente existente</label>
+          <input
+            id="cliente-buscar"
+            name="cliente"
+            type="text"
+            list="clientes"
+            placeholder="Escribe para buscar y elige un cliente"
+            class="mt-1 w-full rounded-lg border border-stone-300 p-2 focus:border-indigo-500 focus:outline-none"
+          >
+          <datalist id="clientes">
+            <option value="María Fernanda Ruiz Soto"></option>
+            <option value="José Luis Pérez Ramírez"></option>
+            <option value="Ana Karen Gómez Díaz"></option>
+          </datalist>
+        </div>
+
+        <!-- Cliente nuevo: se captura aquí mismo, sin pasar por otra pantalla.
+             Que haya un cliente existente o uno nuevo lo valida Django. -->
+        <details class="mt-4 rounded-lg border border-stone-200 p-4">
+          <summary class="cursor-pointer text-sm font-medium text-indigo-700 hover:text-indigo-600">¿Cliente nuevo? Captura sus datos</summary>
+          <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div class="sm:col-span-2">
+              <label for="nuevo-nombre" class="block text-sm text-stone-500">Nombre completo</label>
+              <input
+                id="nuevo-nombre"
+                name="nuevo_nombre"
+                type="text"
+                class="mt-1 w-full rounded-lg border border-stone-300 p-2 focus:border-indigo-500 focus:outline-none"
+              >
+            </div>
+            <div>
+              <label for="nuevo-telefono" class="block text-sm text-stone-500">Teléfono</label>
+              <input
+                id="nuevo-telefono"
+                name="nuevo_telefono"
+                type="tel"
+                class="mt-1 w-full rounded-lg border border-stone-300 p-2 focus:border-indigo-500 focus:outline-none"
+              >
+            </div>
+            <div>
+              <label for="nuevo-correo" class="block text-sm text-stone-500">Correo electrónico</label>
+              <input
+                id="nuevo-correo"
+                name="nuevo_correo"
+                type="email"
+                class="mt-1 w-full rounded-lg border border-stone-300 p-2 focus:border-indigo-500 focus:outline-none"
+              >
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <!-- Equipo -->
+      <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+        <h2 class="text-xl font-semibold">Equipo</h2>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="tipo" class="block text-sm text-stone-500">Tipo de dispositivo</label>
+            <select
+              id="tipo"
+              name="tipo"
+              class="mt-1 w-full rounded-lg border border-stone-300 bg-white p-2 focus:border-indigo-500 focus:outline-none"
+              required
+            >
+              <option value="" selected disabled>Selecciona un tipo</option>
+              <option value="celular">Celular</option>
+              <option value="laptop">Laptop</option>
+              <option value="tablet">Tablet</option>
+            </select>
+          </div>
+          <div>
+            <label for="marca" class="block text-sm text-stone-500">Marca</label>
+            <input
+              id="marca"
+              name="marca"
+              type="text"
+              class="mt-1 w-full rounded-lg border border-stone-300 p-2 focus:border-indigo-500 focus:outline-none"
+              required
+            >
+          </div>
+          <div>
+            <label for="modelo" class="block text-sm text-stone-500">Modelo</label>
+            <input
+              id="modelo"
+              name="modelo"
+              type="text"
+              class="mt-1 w-full rounded-lg border border-stone-300 p-2 focus:border-indigo-500 focus:outline-none"
+              required
+            >
+          </div>
+          <div>
+            <label for="serie" class="block text-sm text-stone-500">Número de serie o IMEI</label>
+            <input
+              id="serie"
+              name="serie"
+              type="text"
+              class="mt-1 w-full rounded-lg border border-stone-300 p-2 focus:border-indigo-500 focus:outline-none"
+              required
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Accesorios entregados -->
+      <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+        <fieldset>
+          <legend class="text-xl font-semibold">Accesorios entregados</legend>
+          <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <label class="flex items-center gap-2 text-sm">
+              <input type="checkbox" name="accesorios" value="cargador" class="h-4 w-4 accent-indigo-600">
+              Cargador
+            </label>
+            <label class="flex items-center gap-2 text-sm">
+              <input type="checkbox" name="accesorios" value="cable-usb" class="h-4 w-4 accent-indigo-600">
+              Cable USB
+            </label>
+            <label class="flex items-center gap-2 text-sm">
+              <input type="checkbox" name="accesorios" value="funda" class="h-4 w-4 accent-indigo-600">
+              Funda
+            </label>
+            <label class="flex items-center gap-2 text-sm">
+              <input type="checkbox" name="accesorios" value="memoria-sd" class="h-4 w-4 accent-indigo-600">
+              Memoria SD
+            </label>
+            <label class="flex items-center gap-2 text-sm">
+              <input type="checkbox" name="accesorios" value="tarjeta-sim" class="h-4 w-4 accent-indigo-600">
+              Tarjeta SIM
+            </label>
+            <label class="flex items-center gap-2 text-sm">
+              <input type="checkbox" name="accesorios" value="otros" class="h-4 w-4 accent-indigo-600">
+              Otros
+            </label>
+          </div>
+          <div class="mt-4">
+            <label for="otros-accesorios" class="block text-sm text-stone-500">Otros accesorios (especifica cuál)</label>
+            <input
+              id="otros-accesorios"
+              name="otros_accesorios"
+              type="text"
+              placeholder="Ej. estuche, audífonos"
+              class="mt-1 w-full rounded-lg border border-stone-300 p-2 focus:border-indigo-500 focus:outline-none"
+            >
+          </div>
+        </fieldset>
+      </section>
+
+      <!-- Falla reportada -->
+      <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+        <h2 class="text-xl font-semibold">Falla reportada</h2>
+        <div class="mt-4">
+          <label for="falla" class="block text-sm text-stone-500">Describe la falla con las palabras del cliente</label>
+          <textarea
+            id="falla"
+            name="falla"
+            rows="4"
+            class="mt-1 w-full rounded-lg border border-stone-300 p-2 focus:border-indigo-500 focus:outline-none"
+            required
+          ></textarea>
+        </div>
+      </section>
+
+      <!-- Asignación -->
+      <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+        <h2 class="text-xl font-semibold">Asignación</h2>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="tecnico" class="block text-sm text-stone-500">Técnico asignado</label>
+            <select
+              id="tecnico"
+              name="tecnico"
+              class="mt-1 w-full rounded-lg border border-stone-300 bg-white p-2 focus:border-indigo-500 focus:outline-none"
+              required
+            >
+              <option value="" selected disabled>Selecciona un técnico</option>
+              <option value="luis">Luis Torres (celulares)</option>
+              <option value="jorge">Jorge Ramírez (laptops y tablets)</option>
+            </select>
+          </div>
+
+          <fieldset>
+            <legend class="block text-sm text-stone-500">Prioridad</legend>
+            <div class="mt-3 flex gap-6">
+              <label class="flex items-center gap-2 text-sm">
+                <input type="radio" name="prioridad" value="normal" class="h-4 w-4 accent-indigo-600" checked>
+                Normal
+              </label>
+              <label class="flex items-center gap-2 text-sm">
+                <input type="radio" name="prioridad" value="urgente" class="h-4 w-4 accent-indigo-600">
+                Urgente
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="sm:col-span-2">
+            <p class="text-sm text-stone-500">Entrega estimada</p>
+            <p class="mt-1 text-sm">Se calcula automáticamente al guardar la orden, según el tipo de falla.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Fotos de recepción -->
+      <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+        <h2 class="text-xl font-semibold">Fotos de recepción</h2>
+        <p class="mt-1 text-sm text-stone-500">Estado físico del equipo al recibirlo: rayones, golpes o fisuras.</p>
+        <div class="mt-4">
+          <label for="fotos" class="sr-only">Fotos del equipo</label>
+          <input
+            id="fotos"
+            name="fotos"
+            type="file"
+            accept="image/*"
+            multiple
+            class="block w-full text-sm text-stone-500 file:mr-4 file:rounded-lg file:border-0 file:bg-stone-200 file:px-4 file:py-2 file:text-sm file:text-stone-800 hover:file:bg-stone-300"
+          >
+        </div>
+      </section>
+
+      <!-- Botones: Cancelar limpia el formulario (no hay pantalla de inicio de recepción) -->
+      <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <button type="reset" class="rounded-lg border border-stone-300 px-5 py-2 text-sm text-stone-800 transition hover:bg-stone-200">Cancelar</button>
+        <button
+          type="submit"
+          class="rounded-lg bg-indigo-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+          Guardar y generar ticket
+        </button>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

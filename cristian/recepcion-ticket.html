@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket 1061 · TecnoFix Dolores</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-stone-100 text-stone-800 print:bg-white">
+  <!-- Barra de navegación de la recepcionista (no se imprime) -->
+  <header class="border-b border-stone-200 bg-stone-100 text-stone-800 print:hidden">
+    <nav class="mx-auto flex max-w-5xl items-center justify-between p-4">
+      <span class="text-lg font-semibold">TecnoFix Dolores</span>
+      <ul class="hidden gap-4 text-sm md:flex lg:gap-6">
+        <li><a href="recepcion-nueva-orden.html" class="hover:text-indigo-600">Nueva orden</a></li>
+        <li><a href="../bryan/recepcion-clientes.html" class="hover:text-indigo-600">Clientes</a></li>
+        <li><a href="../daniel/recepcion-equipos.html" class="hover:text-indigo-600">Equipos</a></li>
+        <li><a href="../daniel/recepcion-buscar-ordenes.html" class="hover:text-indigo-600">Buscar órdenes</a></li>
+        <li><a href="../bryan/recepcion-entrega-cobro.html" class="hover:text-indigo-600">Entrega y cobro</a></li>
+      </ul>
+      <a href="auth-login.html" class="rounded-lg border border-stone-300 px-4 py-2 text-sm text-stone-800 transition hover:bg-stone-200">
+        Cerrar sesión
+      </a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-5xl space-y-6 p-4 py-8 print:p-0">
+
+    <!-- Acciones de Ana (no se imprimen) -->
+    <div class="mx-auto flex max-w-md flex-wrap gap-3 print:hidden">
+      <button
+        type="button"
+        onclick="window.print()"
+        class="rounded-lg bg-indigo-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+      >
+        Imprimir
+      </button>
+      <!-- En Django este enlace apunta a la vista que genera el PDF -->
+      <a href="#" class="rounded-lg border border-stone-300 px-5 py-2 text-sm text-stone-800 transition hover:bg-stone-200">Descargar PDF</a>
+      <a href="recepcion-nueva-orden.html" class="rounded-lg border border-stone-300 px-5 py-2 text-sm text-stone-800 transition hover:bg-stone-200">Nueva orden</a>
+    </div>
+
+    <!-- Ticket de recepción -->
+    <article class="mx-auto max-w-md rounded-xl border border-stone-200 bg-white p-6 shadow-sm print:max-w-none print:border-0 print:shadow-none">
+
+      <header class="text-center">
+        <p class="text-lg font-semibold">TecnoFix Dolores</p>
+        <h1 class="text-sm text-stone-500">Ticket de recepción</h1>
+        <p class="mt-4 text-xs text-stone-500">Folio</p>
+        <p class="text-3xl font-semibold">1061</p>
+        <p class="mt-1 text-sm text-stone-500">Fecha de recepción: 29 de septiembre de 2026</p>
+      </header>
+
+      <section class="mt-4 border-t border-stone-200 pt-4">
+        <h2 class="text-sm font-semibold">Cliente</h2>
+        <dl class="mt-2 space-y-2 text-sm">
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Nombre</dt>
+            <dd class="text-right">María Fernanda Ruiz Soto</dd>
+          </div>
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Teléfono</dt>
+            <dd class="text-right">418 555 0142</dd>
+          </div>
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Correo</dt>
+            <dd class="text-right">maria.ruiz@ejemplo.com</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="mt-4 border-t border-stone-200 pt-4">
+        <h2 class="text-sm font-semibold">Equipo</h2>
+        <dl class="mt-2 space-y-2 text-sm">
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Tipo</dt>
+            <dd class="text-right">Celular</dd>
+          </div>
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Marca</dt>
+            <dd class="text-right">Samsung</dd>
+          </div>
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Modelo</dt>
+            <dd class="text-right">Galaxy A54</dd>
+          </div>
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Serie o IMEI</dt>
+            <dd class="text-right">356938110123456</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="mt-4 border-t border-stone-200 pt-4">
+        <h2 class="text-sm font-semibold">Accesorios entregados</h2>
+        <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">
+          <li>Cargador</li>
+          <li>Cable USB</li>
+          <li>Funda</li>
+          <li>Tarjeta SIM</li>
+        </ul>
+      </section>
+
+      <section class="mt-4 border-t border-stone-200 pt-4">
+        <h2 class="text-sm font-semibold">Falla reportada</h2>
+        <p class="mt-2 text-sm">Se me cayó y la pantalla se ve con rayas verdes; a veces no responde al tacto.</p>
+      </section>
+
+      <section class="mt-4 border-t border-stone-200 pt-4">
+        <h2 class="text-sm font-semibold">Orden</h2>
+        <dl class="mt-2 space-y-2 text-sm">
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Técnico asignado</dt>
+            <dd class="text-right">Luis Torres</dd>
+          </div>
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Entrega estimada</dt>
+            <dd class="text-right">3 de octubre de 2026</dd>
+          </div>
+        </dl>
+      </section>
+
+      <!-- Reparación terminada: quita "hidden" para ver cómo el costo final se agrega al ticket -->
+      <section class="mt-4 hidden border-t border-stone-200 pt-4">
+        <div class="flex items-baseline justify-between gap-4">
+          <h2 class="text-sm font-semibold">Costo final</h2>
+          <p class="text-lg font-semibold">$1,850.00</p>
+        </div>
+      </section>
+
+      <!-- Cotización rechazada: quita "hidden" para ver el cargo por diagnóstico (si el taller lo aplica) -->
+      <section class="mt-4 hidden border-t border-stone-200 pt-4">
+        <div class="flex items-baseline justify-between gap-4">
+          <h2 class="text-sm font-semibold">Cargo por diagnóstico</h2>
+          <p class="text-lg font-semibold">$150.00</p>
+        </div>
+      </section>
+
+      <p class="mt-6 border-t border-stone-200 pt-4 text-center text-xs text-stone-500">
+        Conserva este ticket y preséntalo para recoger tu equipo.
+      </p>
+    </article>
+  </main>
+</body>
+</html>

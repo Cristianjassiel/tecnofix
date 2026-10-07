@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Órdenes asignadas · TecnoFix Dolores</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-stone-100 text-stone-800">
+  <!-- Barra de navegación del técnico -->
+  <header class="border-b border-stone-200 bg-stone-100 text-stone-800">
+    <nav class="mx-auto flex max-w-5xl items-center justify-between p-4">
+      <span class="text-lg font-semibold">TecnoFix Dolores</span>
+      <ul class="flex gap-6 text-sm">
+        <li><a href="tecnico-panel.html" class="font-medium text-indigo-700">Órdenes asignadas</a></li>
+      </ul>
+      <a href="auth-login.html" class="rounded-lg border border-stone-300 px-4 py-2 text-sm text-stone-800 transition hover:bg-stone-200">
+        Cerrar sesión
+      </a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-5xl space-y-6 p-4 py-8">
+    <div>
+      <h1 class="text-2xl font-semibold">Órdenes asignadas</h1>
+      <p class="mt-1 text-sm text-stone-500">Luis Torres</p>
+    </div>
+
+    <!-- Tabla de órdenes del técnico (datos de ejemplo), de la más antigua a la más reciente -->
+    <section class="overflow-x-auto rounded-xl border border-stone-200 bg-white shadow-sm">
+      <table class="w-full text-left text-sm">
+        <caption class="sr-only">Órdenes de servicio asignadas al técnico</caption>
+        <thead class="border-b border-stone-200 text-stone-500">
+          <tr>
+            <th scope="col" class="p-4 font-medium">Folio</th>
+            <th scope="col" class="p-4 font-medium">Equipo</th>
+            <th scope="col" class="p-4 font-medium">Falla reportada</th>
+            <th scope="col" class="p-4 font-medium">Prioridad</th>
+            <th scope="col" class="p-4 font-medium">Estado</th>
+            <th scope="col" class="p-4 font-medium">Recepción</th>
+            <th scope="col" class="p-4 font-medium">Entrega estimada</th>
+            <th scope="col" class="p-4 font-medium">Acción</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-stone-100">
+
+          <!-- Rechazado -->
+          <tr class="hover:bg-stone-50">
+            <td class="p-4 font-medium">1052</td>
+            <td class="p-4">Celular Motorola G32</td>
+            <td class="p-4"><p class="max-w-xs truncate" title="Pantalla estrellada">Pantalla estrellada</p></td>
+            <td class="whitespace-nowrap p-4 text-stone-500">Normal</td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-800">Rechazado</span>
+            </td>
+            <td class="whitespace-nowrap p-4">18 sep</td>
+            <td class="whitespace-nowrap p-4">—</td>
+            <td class="whitespace-nowrap p-4">
+              <a href="../daniel/tecnico-detalle-orden.html" class="font-medium text-indigo-700 hover:text-indigo-600">Abrir</a>
+            </td>
+          </tr>
+
+          <!-- Terminado -->
+          <tr class="hover:bg-stone-50">
+            <td class="p-4 font-medium">1055</td>
+            <td class="p-4">Celular Samsung Galaxy A32</td>
+            <td class="p-4"><p class="max-w-xs truncate" title="Cámara trasera borrosa">Cámara trasera borrosa</p></td>
+            <td class="whitespace-nowrap p-4 text-stone-500">Normal</td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-teal-100 px-3 py-1 text-xs font-medium text-teal-800">Terminado</span>
+            </td>
+            <td class="whitespace-nowrap p-4">24 sep</td>
+            <td class="whitespace-nowrap p-4">1 oct</td>
+            <td class="whitespace-nowrap p-4">
+              <a href="../daniel/tecnico-detalle-orden.html" class="font-medium text-indigo-700 hover:text-indigo-600">Abrir</a>
+            </td>
+          </tr>
+
+          <!-- Arreglando -->
+          <tr class="hover:bg-stone-50">
+            <td class="p-4 font-medium">1057</td>
+            <td class="p-4">Celular Huawei P30 Lite</td>
+            <td class="p-4"><p class="max-w-xs truncate" title="No enciende después de mojarse">No enciende después de mojarse</p></td>
+            <td class="whitespace-nowrap p-4 font-semibold text-stone-800">Urgente</td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-800">Arreglando</span>
+            </td>
+            <td class="whitespace-nowrap p-4">25 sep</td>
+            <td class="whitespace-nowrap p-4">4 oct</td>
+            <td class="whitespace-nowrap p-4">
+              <a href="../daniel/tecnico-detalle-orden.html" class="font-medium text-indigo-700 hover:text-indigo-600">Abrir</a>
+            </td>
+          </tr>
+
+          <!-- En revisión: esperando la respuesta del cliente -->
+          <tr class="hover:bg-stone-50">
+            <td class="p-4 font-medium">1061</td>
+            <td class="p-4">Celular Samsung Galaxy A54</td>
+            <td class="p-4"><p class="max-w-xs truncate" title="Pantalla con rayas verdes; a veces no responde al tacto">Pantalla con rayas verdes; a veces no responde al tacto</p></td>
+            <td class="whitespace-nowrap p-4 text-stone-500">Normal</td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">En revisión</span>
+            </td>
+            <td class="whitespace-nowrap p-4">29 sep</td>
+            <td class="whitespace-nowrap p-4">3 oct</td>
+            <td class="whitespace-nowrap p-4">
+              <a href="../daniel/tecnico-detalle-orden.html" class="font-medium text-indigo-700 hover:text-indigo-600">Abrir</a>
+            </td>
+          </tr>
+
+          <!-- En diagnóstico -->
+          <tr class="hover:bg-stone-50">
+            <td class="p-4 font-medium">1062</td>
+            <td class="p-4">Celular iPhone 11</td>
+            <td class="p-4"><p class="max-w-xs truncate" title="Se apaga solo y la batería dura muy poco">Se apaga solo y la batería dura muy poco</p></td>
+            <td class="whitespace-nowrap p-4 text-stone-500">Normal</td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">En diagnóstico</span>
+            </td>
+            <td class="whitespace-nowrap p-4">30 sep</td>
+            <td class="whitespace-nowrap p-4">7 oct</td>
+            <td class="whitespace-nowrap p-4">
+              <a href="../daniel/tecnico-detalle-orden.html" class="font-medium text-indigo-700 hover:text-indigo-600">Abrir</a>
+            </td>
+          </tr>
+
+          <!-- Recibido: orden nueva, todavía sin empezar -->
+          <tr class="hover:bg-stone-50">
+            <td class="p-4 font-medium">1064</td>
+            <td class="p-4">Celular Xiaomi Redmi Note 12</td>
+            <td class="p-4"><p class="max-w-xs truncate" title="No carga; el puerto de carga se siente flojo">No carga; el puerto de carga se siente flojo</p></td>
+            <td class="whitespace-nowrap p-4 font-semibold text-stone-800">Urgente</td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">Recibido</span>
+            </td>
+            <td class="whitespace-nowrap p-4">2 oct</td>
+            <td class="whitespace-nowrap p-4">9 oct</td>
+            <td class="whitespace-nowrap p-4">
+              <a href="../daniel/tecnico-detalle-orden.html" class="font-medium text-indigo-700 hover:text-indigo-600">Abrir</a>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

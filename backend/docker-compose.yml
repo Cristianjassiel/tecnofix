@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16
+    container_name: tecnofix_db
+    environment:
+      POSTGRES_DB: tecnofix
+      POSTGRES_USER: tecnofix
+      POSTGRES_PASSWORD: tecnofix_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tecnofix -d tecnofix"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:

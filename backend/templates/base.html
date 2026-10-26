@@ -1,0 +1,64 @@
+{% load servicios_extras %}<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block titulo %}TecnoFix Dolores{% endblock %} · TecnoFix Dolores</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-stone-100 text-stone-800 {% block clases_body %}{% endblock %}">
+  {% block navbar %}
+  <header class="border-b border-stone-200 bg-stone-100 text-stone-800 print:hidden">
+    <nav class="mx-auto flex max-w-5xl items-center justify-between gap-4 p-4">
+      <a href="{% url 'inicio' %}" class="text-lg font-semibold">TecnoFix Dolores</a>
+
+      {% if user.is_authenticated %}
+        <ul class="hidden gap-4 text-sm md:flex lg:gap-6">
+          {% if rol_actual == "Recepcionista" %}
+            {% navlink 'nueva_orden' 'Nueva orden' request %}
+            {% navlink 'equipo_nuevo' 'Nuevo equipo' request %}
+            {% navlink 'clientes' 'Clientes' request %}
+            {% navlink 'equipos' 'Equipos' request %}
+            {% navlink 'buscar_ordenes' 'Buscar órdenes' request %}
+            {% navlink 'entrega_cobro' 'Entrega y cobro' request %}
+          {% elif rol_actual == "Tecnico" %}
+            {% navlink 'tecnico_panel' 'Órdenes asignadas' request %}
+          {% elif rol_actual == "Cliente" %}
+            {% navlink 'mis_ordenes' 'Mis órdenes' request %}
+          {% elif rol_actual == "Administrador" %}
+            {% navlink 'admin_dashboard' 'Dashboard' request %}
+            {% navlink 'buscar_ordenes' 'Órdenes' request %}
+            {% navlink 'admin_auditoria' 'Auditoría' request %}
+          {% endif %}
+        </ul>
+
+        <form action="{% url 'logout' %}" method="post" class="shrink-0">
+          {% csrf_token %}
+          <button type="submit" class="rounded-lg border border-stone-300 px-4 py-2 text-sm text-stone-800 transition hover:bg-stone-200">
+            Cerrar sesión
+          </button>
+        </form>
+      {% endif %}
+    </nav>
+  </header>
+  {% endblock %}
+
+  <main class="mx-auto max-w-5xl space-y-6 p-4 py-8 {% block clases_main %}{% endblock %}">
+    {% if messages %}
+      <div class="space-y-3 print:hidden">
+        {% for mensaje in messages %}
+          <div role="alert" class="rounded-lg p-3 text-sm
+            {% if mensaje.tags == 'error' %}bg-red-100 text-red-800
+            {% elif mensaje.tags == 'warning' %}bg-amber-100 text-amber-800
+            {% elif mensaje.tags == 'success' %}bg-emerald-100 text-emerald-800
+            {% else %}bg-blue-100 text-blue-800{% endif %}">
+            {{ mensaje }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block contenido %}{% endblock %}
+  </main>
+</body>
+</html>

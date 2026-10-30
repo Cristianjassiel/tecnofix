@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load servicios_extras %}
+{% url 'equipos' as url_equipos %}
+
+{% block titulo %}{% if equipo %}Editar equipo{% else %}Nuevo equipo{% endif %}{% endblock %}
+
+{% block contenido %}
+  {% if url_equipos %}<a href="{{ url_equipos }}" class="inline-block text-sm text-indigo-700 hover:text-indigo-600">← Volver a equipos</a>{% endif %}
+
+  <h1 class="text-2xl font-semibold">{% if equipo %}Editar equipo{% else %}Nuevo equipo{% endif %}</h1>
+
+  <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+    <h2 class="text-xl font-semibold">Datos del equipo</h2>
+
+    <form method="post" class="mt-4 grid gap-4 sm:grid-cols-2">
+      {% csrf_token %}
+
+      {% for campo in form %}
+        <div class="{% if campo.name == 'cliente' %}sm:col-span-2{% endif %}">
+          <label for="{{ campo.id_for_label }}" class="block text-sm text-stone-500">{{ campo.label }}</label>
+          {{ campo }}
+          {% for error in campo.errors %}<p class="mt-1 text-sm text-red-800">{{ error }}</p>{% endfor %}
+        </div>
+      {% endfor %}
+
+      <div class="flex flex-col-reverse gap-3 sm:col-span-2 sm:flex-row sm:justify-end">
+        <a href="{% if url_equipos %}{{ url_equipos }}{% else %}{% url 'nueva_orden' %}{% endif %}" class="rounded-lg border border-stone-300 px-5 py-2 text-center text-sm text-stone-800 transition hover:bg-stone-200">Cancelar</a>
+        <button type="submit" class="rounded-lg bg-indigo-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+          {% if equipo %}Guardar cambios{% else %}Guardar equipo{% endif %}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  {# Historial del equipo: permite ver si regresó por la misma falla. #}
+  {% if equipo %}
+    <section class="rounded-xl border border-stone-200 bg-white shadow-sm">
+      <h2 class="p-6 pb-0 text-xl font-semibold">Historial de órdenes del equipo</h2>
+      <div class="mt-4 overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <caption class="sr-only">Órdenes de servicio anteriores de este equipo</caption>
+          <thead class="border-y border-stone-200 text-stone-500">
+            <tr>
+              <th scope="col" class="p-4 font-medium">Folio</th>
+              <th scope="col" class="p-4 font-medium">Recepción</th>
+              <th scope="col" class="p-4 font-medium">Falla reportada</th>
+              <th scope="col" class="p-4 font-medium">Estado</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-stone-100">
+            {% for orden in historial %}
+              <tr class="hover:bg-stone-50">
+                <td class="p-4 font-medium">{{ orden.folio }}</td>
+                <td class="whitespace-nowrap p-4">{{ orden.fecha_recepcion|date:"j M Y" }}</td>
+                <td class="p-4"><p class="max-w-xs truncate" title="{{ orden.falla_reportada }}">{{ orden.falla_reportada }}</p></td>
+                <td class="p-4">{% badge_estado orden.estado %}</td>
+              </tr>
+            {% empty %}
+              <tr><td colspan="4" class="p-4 text-sm text-stone-500">Este equipo todavía no tiene órdenes de servicio.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}

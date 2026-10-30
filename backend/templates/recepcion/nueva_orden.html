@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block titulo %}Nueva orden{% endblock %}
+
+{% block contenido %}
+  <h1 class="text-2xl font-semibold">Nueva orden de servicio</h1>
+
+  <form action="{% url 'nueva_orden' %}" method="post" enctype="multipart/form-data" class="space-y-6">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div role="alert" class="rounded-lg bg-red-100 p-3 text-sm text-red-800">
+        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+      </div>
+    {% endif %}
+
+    <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+      <h2 class="text-xl font-semibold">Cliente</h2>
+
+      <div class="mt-4">
+        <label for="{{ form.cliente_existente.id_for_label }}" class="block text-sm text-stone-500">{{ form.cliente_existente.label }}</label>
+        {{ form.cliente_existente }}
+        {% for error in form.cliente_existente.errors %}<p class="mt-1 text-sm text-red-800">{{ error }}</p>{% endfor %}
+      </div>
+
+      {# Cliente nuevo: se captura aquí mismo, sin pasar por otra pantalla. #}
+      <details class="mt-4 rounded-lg border border-stone-200 p-4" {% if form.nuevo_nombre.value or form.nuevo_telefono.errors %}open{% endif %}>
+        <summary class="cursor-pointer text-sm font-medium text-indigo-700 hover:text-indigo-600">¿Cliente nuevo? Captura sus datos</summary>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+          <div class="sm:col-span-2">
+            <label for="{{ form.nuevo_nombre.id_for_label }}" class="block text-sm text-stone-500">{{ form.nuevo_nombre.label }}</label>
+            {{ form.nuevo_nombre }}
+            {% for error in form.nuevo_nombre.errors %}<p class="mt-1 text-sm text-red-800">{{ error }}</p>{% endfor %}
+          </div>
+          <div>
+            <label for="{{ form.nuevo_telefono.id_for_label }}" class="block text-sm text-stone-500">{{ form.nuevo_telefono.label }}</label>
+            {{ form.nuevo_telefono }}
+            {% for error in form.nuevo_telefono.errors %}<p class="mt-1 text-sm text-red-800">{{ error }}</p>{% endfor %}
+          </div>
+          <div>
+            <label for="{{ form.nuevo_correo.id_for_label }}" class="block text-sm text-stone-500">{{ form.nuevo_correo.label }}</label>
+            {{ form.nuevo_correo }}
+            {% for error in form.nuevo_correo.errors %}<p class="mt-1 text-sm text-red-800">{{ error }}</p>{% endfor %}
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+      <h2 class="text-xl font-semibold">Equipo</h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        {% for campo in form %}
+          {% if campo.name in "tipo,marca,modelo,numero_serie" %}
+            <div>
+              <label for="{{ campo.id_for_label }}" class="block text-sm text-stone-500">{{ campo.label }}</label>
+              {{ campo }}
+              {% for error in campo.errors %}<p class="mt-1 text-sm text-red-800">{{ error }}</p>{% endfor %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+      <fieldset>
+        <legend class="text-xl font-semibold">Accesorios entregados</legend>
+        <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {% for opcion in form.accesorios %}
+            <label class="flex items-center gap-2 text-sm">
+              {{ opcion.tag }}
+              {{ opcion.choice_label }}
+            </label>
+          {% endfor %}
+        </div>
+        <div class="mt-4">
+          <label for="{{ form.otros_accesorios.id_for_label }}" class="block text-sm text-stone-500">{{ form.otros_accesorios.label }}</label>
+          {{ form.otros_accesorios }}
+        </div>
+      </fieldset>
+    </section>
+
+    <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+      <h2 class="text-xl font-semibold">Falla reportada</h2>
+      <div class="mt-4">
+        <label for="{{ form.falla_reportada.id_for_label }}" class="block text-sm text-stone-500">{{ form.falla_reportada.label }}</label>
+        {{ form.falla_reportada }}
+        {% for error in form.falla_reportada.errors %}<p class="mt-1 text-sm text-red-800">{{ error }}</p>{% endfor %}
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+      <h2 class="text-xl font-semibold">Asignación</h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="{{ form.tecnico.id_for_label }}" class="block text-sm text-stone-500">{{ form.tecnico.label }}</label>
+          {{ form.tecnico }}
+          {% for error in form.tecnico.errors %}<p class="mt-1 text-sm text-red-800">{{ error }}</p>{% endfor %}
+        </div>
+
+        <fieldset>
+          <legend class="block text-sm text-stone-500">{{ form.prioridad.label }}</legend>
+          <div class="mt-3 flex gap-6">
+            {% for opcion in form.prioridad %}
+              <label class="flex items-center gap-2 text-sm">
+                {{ opcion.tag }}
+                {{ opcion.choice_label }}
+              </label>
+            {% endfor %}
+          </div>
+        </fieldset>
+
+        <div class="sm:col-span-2">
+          <p class="text-sm text-stone-500">Entrega estimada</p>
+          <p class="mt-1 text-sm">El sistema la calcula al guardar: una semana para prioridad normal, tres días para urgente.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+      <h2 class="text-xl font-semibold">Fotos de recepción</h2>
+      <p class="mt-1 text-sm text-stone-500">Estado físico del equipo al recibirlo: rayones, golpes o fisuras.</p>
+      <div class="mt-4">
+        {{ form.fotos }}
+      </div>
+    </section>
+
+    <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+      <button type="reset" class="rounded-lg border border-stone-300 px-5 py-2 text-sm text-stone-800 transition hover:bg-stone-200">Limpiar</button>
+      <button type="submit" class="rounded-lg bg-indigo-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+        Guardar y generar ticket
+      </button>
+    </div>
+  </form>
+{% endblock %}

@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% load servicios_extras %}
+
+{% block titulo %}Orden {{ orden.folio }}{% endblock %}
+
+{% block contenido %}
+  <a href="{% url 'mis_ordenes' %}" class="inline-block text-sm text-indigo-700 hover:text-indigo-600">← Volver a mis órdenes</a>
+
+  <div class="flex flex-wrap items-start justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-semibold">Orden {{ orden.folio }}</h1>
+      <p class="mt-1 text-sm text-stone-500">{{ orden.equipo }}</p>
+      {% if orden.es_de_garantia %}
+        <p class="mt-1 text-sm text-stone-500">Orden de garantía de la {{ orden.orden_original.folio }}, sin costo.</p>
+      {% endif %}
+    </div>
+    {% badge_estado orden.estado %}
+  </div>
+
+  <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+    <h2 class="text-xl font-semibold">Seguimiento</h2>
+
+    <ol class="mt-4 grid gap-3 {% if orden.estado == 'rechazado' %}grid-cols-4{% else %}grid-cols-3 sm:grid-cols-6{% endif %}" aria-label="Progreso de la orden">
+      {% for paso in seguimiento %}
+        <li {% if paso.actual %}aria-current="step"{% endif %}>
+          <div class="h-1.5 rounded-full {% if paso.completado %}{% if orden.estado == 'rechazado' and paso.actual %}bg-red-800{% else %}bg-indigo-600{% endif %}{% else %}bg-stone-200{% endif %}"></div>
+          <p class="mt-2 text-xs {% if paso.actual %}font-medium {% if orden.estado == 'rechazado' %}text-red-800{% else %}text-stone-800{% endif %}{% else %}text-stone-500{% endif %}">{{ paso.etiqueta }}</p>
+        </li>
+      {% endfor %}
+    </ol>
+  </section>
+
+  {% if orden.estado == "revision" and orden.cotizacion %}
+    <div class="rounded-xl bg-blue-100 p-4 text-blue-800">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p class="text-sm font-medium">Tienes una cotización pendiente de tu respuesta.</p>
+        {% url 'aprobar_cotizacion' orden.folio as url_aprobar_cotizacion %}{% if url_aprobar_cotizacion %}<a href="{{ url_aprobar_cotizacion }}" class="rounded-lg bg-indigo-600 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Revisar cotización</a>{% endif %}
+      </div>
+    </div>
+  {% elif orden.estado == "terminado" %}
+    <div class="rounded-xl bg-teal-100 p-4 text-sm text-teal-800">
+      <p class="font-medium">Tu equipo está listo para entregarse.</p>
+      <p class="mt-1">Preséntate en el taller con tu ticket para recogerlo.
+        {% if orden.costo_final %}Costo final: <span class="font-medium">${{ orden.costo_final|floatformat:"2g" }}</span>{% endif %}
+      </p>
+    </div>
+  {% elif orden.estado == "rechazado" %}
+    <div class="rounded-xl bg-red-100 p-4 text-sm text-red-800">
+      <p class="font-medium">Rechazaste la cotización, por lo que la reparación no se realizó.</p>
+      {% if orden.cotizacion.cargo_diagnostico %}
+        <p class="mt-1">Cargo por diagnóstico: <span class="font-medium">${{ orden.cotizacion.cargo_diagnostico|floatformat:"2g" }}</span></p>
+      {% endif %}
+    </div>
+  {% elif orden.estado == "entregado" %}
+    <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+      <h2 class="text-xl font-semibold">Entrega</h2>
+      <p class="mt-2 text-sm">
+        Entregado el {{ orden.fecha_entrega|date:"j \d\e F \d\e Y"|lower }}.
+        {% if orden.costo_final %}Costo final: <span class="font-medium">${{ orden.costo_final|floatformat:"2g" }}</span>{% endif %}
+      </p>
+      {% if orden.en_garantia %}
+        <p class="mt-1 text-sm text-stone-500">Tu reparación tiene garantía de {{ orden.garantia_dias }} días. Si la falla regresa, acude al taller con tu ticket.</p>
+      {% endif %}
+      <p class="mt-4 text-sm">
+        {% if orden.calificacion %}
+          Calificaste este servicio con {{ orden.calificacion.puntuacion }} de 5.
+        {% else %}
+          {% url 'calificar' orden.folio as url_calificar %}{% if url_calificar %}<a href="{{ url_calificar }}" class="font-medium text-indigo-700 hover:text-indigo-600">Calificar servicio</a>{% endif %}
+        {% endif %}
+      </p>
+    </section>
+  {% endif %}
+
+  <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+    <h2 class="text-xl font-semibold">Datos de la orden</h2>
+
+    <div class="mt-4 grid gap-6 sm:grid-cols-2">
+      <div>
+        <h3 class="text-sm font-semibold">Cliente</h3>
+        <dl class="mt-2 space-y-2 text-sm">
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Nombre</dt>
+            <dd class="text-right">{{ orden.equipo.cliente.nombre_completo }}</dd>
+          </div>
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Teléfono</dt>
+            <dd class="text-right">{{ orden.equipo.cliente.telefono }}</dd>
+          </div>
+          {% if orden.equipo.cliente.correo %}
+            <div class="flex justify-between gap-4">
+              <dt class="text-stone-500">Correo</dt>
+              <dd class="text-right">{{ orden.equipo.cliente.correo }}</dd>
+            </div>
+          {% endif %}
+        </dl>
+      </div>
+
+      <div>
+        <h3 class="text-sm font-semibold">Equipo</h3>
+        <dl class="mt-2 space-y-2 text-sm">
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Tipo</dt>
+            <dd class="text-right">{{ orden.equipo.get_tipo_display }}</dd>
+          </div>
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Marca</dt>
+            <dd class="text-right">{{ orden.equipo.marca }}</dd>
+          </div>
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Modelo</dt>
+            <dd class="text-right">{{ orden.equipo.modelo }}</dd>
+          </div>
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Serie o IMEI</dt>
+            <dd class="text-right">{{ orden.equipo.numero_serie|default:"—" }}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div>
+        <h3 class="text-sm font-semibold">Orden</h3>
+        <dl class="mt-2 space-y-2 text-sm">
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Técnico asignado</dt>
+            <dd class="text-right">{{ orden.tecnico.get_full_name|default:"Por asignar" }}</dd>
+          </div>
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Fecha de recepción</dt>
+            <dd class="text-right">{{ orden.fecha_recepcion|date:"j \d\e F \d\e Y"|lower }}</dd>
+          </div>
+          <div class="flex justify-between gap-4">
+            <dt class="text-stone-500">Entrega estimada</dt>
+            <dd class="text-right">{{ orden.fecha_entrega_estimada|date:"j \d\e F \d\e Y"|lower|default:"—" }}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div>
+        <h3 class="text-sm font-semibold">Accesorios entregados</h3>
+        {% if orden.accesorios.all or orden.otros_accesorios %}
+          <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">
+            {% for accesorio in orden.accesorios.all %}<li>{{ accesorio.nombre }}</li>{% endfor %}
+            {% if orden.otros_accesorios %}<li>{{ orden.otros_accesorios }}</li>{% endif %}
+          </ul>
+        {% else %}
+          <p class="mt-2 text-sm text-stone-500">No se entregaron accesorios.</p>
+        {% endif %}
+      </div>
+
+      <div class="sm:col-span-2">
+        <h3 class="text-sm font-semibold">Falla reportada</h3>
+        <p class="mt-2 text-sm">{{ orden.falla_reportada }}</p>
+      </div>
+    </div>
+  </section>
+
+  {% if orden.evidencias.all %}
+    <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+      <h2 class="text-xl font-semibold">Evidencia fotográfica</h2>
+      <p class="mt-1 text-sm text-stone-500">Estado físico del equipo al recibirlo y al entregarlo.</p>
+      <div class="mt-4 grid gap-3 sm:grid-cols-3">
+        {% for evidencia in orden.evidencias.all %}
+          <figure>
+            <img src="{{ evidencia.imagen.url }}" alt="{{ evidencia.get_momento_display }}" class="aspect-video w-full rounded-lg object-cover">
+            <figcaption class="mt-1 text-xs text-stone-500">{{ evidencia.get_momento_display }}</figcaption>
+          </figure>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}

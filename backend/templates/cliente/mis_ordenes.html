@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load servicios_extras %}
+
+{% block titulo %}Mis órdenes{% endblock %}
+
+{% block contenido %}
+  <div>
+    <h1 class="text-2xl font-semibold">Mis órdenes</h1>
+    <p class="mt-1 text-sm text-stone-500">Consulta el estado de tus equipos en el taller.</p>
+  </div>
+
+  {% if ordenes %}
+    <section class="overflow-x-auto rounded-xl border border-stone-200 bg-white shadow-sm">
+      <table class="w-full text-left text-sm">
+        <caption class="sr-only">Órdenes de servicio del cliente</caption>
+        <thead class="border-b border-stone-200 text-stone-500">
+          <tr>
+            <th scope="col" class="p-4 font-medium">Folio</th>
+            <th scope="col" class="p-4 font-medium">Equipo</th>
+            <th scope="col" class="p-4 font-medium">Estado</th>
+            <th scope="col" class="p-4 font-medium">Recepción</th>
+            <th scope="col" class="p-4 font-medium">Entrega estimada</th>
+            <th scope="col" class="p-4 font-medium">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-stone-100">
+          {% for orden in ordenes %}
+            <tr class="hover:bg-stone-50">
+              <td class="p-4 font-medium">{{ orden.folio }}</td>
+              <td class="p-4">{{ orden.equipo }}</td>
+              <td class="p-4">{% badge_estado orden.estado %}</td>
+              <td class="whitespace-nowrap p-4">{{ orden.fecha_recepcion|date:"j M" }}</td>
+              <td class="whitespace-nowrap p-4">
+                {% if orden.fecha_entrega_estimada %}{{ orden.fecha_entrega_estimada|date:"j M" }}{% else %}—{% endif %}
+              </td>
+              <td class="p-4">
+                <div class="flex flex-wrap items-center gap-3">
+                  <a href="{% url 'cliente_orden' orden.folio %}" class="font-medium text-indigo-700 hover:text-indigo-600">Ver detalle</a>
+                  {% if orden.estado == "revision" %}
+                    {% url 'aprobar_cotizacion' orden.folio as url_aprobar_cotizacion %}{% if url_aprobar_cotizacion %}<a href="{{ url_aprobar_cotizacion }}" class="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Revisar cotización</a>{% endif %}
+                  {% elif orden.estado == "entregado" and not orden.calificacion %}
+                    {% url 'calificar' orden.folio as url_calificar %}{% if url_calificar %}<a href="{{ url_calificar }}" class="font-medium text-indigo-700 hover:text-indigo-600">Calificar servicio</a>{% endif %}
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  {% else %}
+    <section class="rounded-xl border border-stone-200 bg-white p-6 text-sm text-stone-500 shadow-sm">
+      Todavía no tienes equipos registrados en el taller.
+    </section>
+  {% endif %}
+{% endblock %}

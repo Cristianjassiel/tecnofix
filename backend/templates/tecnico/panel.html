@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load servicios_extras %}
+
+{% block titulo %}Órdenes asignadas{% endblock %}
+
+{% block contenido %}
+  <div>
+    <h1 class="text-2xl font-semibold">Órdenes asignadas</h1>
+    <p class="mt-1 text-sm text-stone-500">{{ user.get_full_name|default:user.username }}</p>
+  </div>
+
+  <section class="overflow-x-auto rounded-xl border border-stone-200 bg-white shadow-sm">
+    <table class="w-full text-left text-sm">
+      <caption class="sr-only">Órdenes de servicio asignadas al técnico</caption>
+      <thead class="border-b border-stone-200 text-stone-500">
+        <tr>
+          <th scope="col" class="p-4 font-medium">Folio</th>
+          <th scope="col" class="p-4 font-medium">Equipo</th>
+          <th scope="col" class="p-4 font-medium">Falla reportada</th>
+          <th scope="col" class="p-4 font-medium">Prioridad</th>
+          <th scope="col" class="p-4 font-medium">Estado</th>
+          <th scope="col" class="p-4 font-medium">Recepción</th>
+          <th scope="col" class="p-4 font-medium">Entrega estimada</th>
+          <th scope="col" class="p-4 font-medium">Acción</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-stone-100">
+        {% for orden in ordenes %}
+          <tr class="hover:bg-stone-50">
+            <td class="p-4 font-medium">{{ orden.folio }}</td>
+            <td class="p-4">{{ orden.equipo }}</td>
+            <td class="p-4"><p class="max-w-xs truncate" title="{{ orden.falla_reportada }}">{{ orden.falla_reportada }}</p></td>
+            <td class="whitespace-nowrap p-4 {% if orden.prioridad == 'urgente' %}font-semibold text-stone-800{% else %}text-stone-500{% endif %}">
+              {{ orden.get_prioridad_display }}
+            </td>
+            <td class="whitespace-nowrap p-4">{% badge_estado orden.estado %}</td>
+            <td class="whitespace-nowrap p-4">{{ orden.fecha_recepcion|date:"j M" }}</td>
+            <td class="whitespace-nowrap p-4">{{ orden.fecha_entrega_estimada|date:"j M"|default:"—" }}</td>
+            <td class="whitespace-nowrap p-4">
+              {% url 'tecnico_orden' orden.folio as url_tecnico_orden %}{% if url_tecnico_orden %}<a href="{{ url_tecnico_orden }}" class="font-medium text-indigo-700 hover:text-indigo-600">Abrir</a>{% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="8" class="p-4 text-sm text-stone-500">No tienes órdenes asignadas.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}

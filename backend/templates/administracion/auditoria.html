@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load servicios_extras %}
+
+{% block titulo %}Bitácora de auditoría{% endblock %}
+
+{% block contenido %}
+  <div>
+    <h1 class="text-2xl font-semibold">Bitácora de auditoría</h1>
+    <p class="mt-1 text-sm text-stone-500">Registro de quién cambió el estado de cada orden de servicio.</p>
+  </div>
+
+  <section class="overflow-x-auto rounded-xl border border-stone-200 bg-white shadow-sm">
+    <table class="w-full text-left text-sm">
+      <caption class="sr-only">Cambios de estado de las órdenes de servicio</caption>
+      <thead class="border-b border-stone-200 text-stone-500">
+        <tr>
+          <th scope="col" class="p-4 font-medium">Fecha y hora</th>
+          <th scope="col" class="p-4 font-medium">Folio</th>
+          <th scope="col" class="p-4 font-medium">Estado anterior</th>
+          <th scope="col" class="p-4 font-medium">Estado nuevo</th>
+          <th scope="col" class="p-4 font-medium">Usuario</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-stone-100">
+        {% for fila in filas %}
+          <tr class="hover:bg-stone-50">
+            <td class="whitespace-nowrap p-4">{{ fila.registro.fecha|date:"j M Y, H:i" }}</td>
+            <td class="p-4 font-medium">{{ fila.registro.orden.folio }}</td>
+            <td class="whitespace-nowrap p-4">{% badge_estado fila.registro.estado_anterior %}</td>
+            <td class="whitespace-nowrap p-4">{% badge_estado fila.registro.estado_nuevo %}</td>
+            <td class="whitespace-nowrap p-4">
+              <p class="font-medium">{{ fila.registro.usuario.get_full_name|default:fila.registro.usuario.username|default:"—" }}</p>
+              {% if fila.rol %}<p class="text-xs text-stone-500">{{ fila.rol }}</p>{% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="5" class="p-4 text-sm text-stone-500">Todavía no hay cambios de estado registrados.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}

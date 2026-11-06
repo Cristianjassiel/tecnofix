@@ -3,16 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Órdenes asignadas · TecnoFix Dolores</title>
+  <title>Bitácora de auditoría · TecnoFix Dolores</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-stone-100 text-stone-800">
-  <!-- Barra de navegación del técnico -->
+  <!-- Barra de navegación del administrador -->
   <header class="border-b border-stone-200 bg-stone-100 text-stone-800">
     <nav class="mx-auto flex max-w-5xl items-center justify-between p-4">
       <span class="text-lg font-semibold">TecnoFix Dolores</span>
-      <ul class="flex gap-6 text-sm">
-        <li><a href="tecnico-panel.html" class="font-medium text-indigo-700">Órdenes asignadas</a></li>
+      <ul class="hidden gap-4 text-sm md:flex lg:gap-6">
+        <li><a href="../daniel/admin-dashboard.html" class="hover:text-indigo-600">Dashboard</a></li>
+        <li><a href="../daniel/admin-reportes.html" class="hover:text-indigo-600">Reportes</a></li>
+        <li><a href="../bryan/admin-usuarios.html" class="hover:text-indigo-600">Usuarios</a></li>
+        <li><a href="../bryan/admin-catalogo.html" class="hover:text-indigo-600">Catálogo</a></li>
+        <li><a href="admin-auditoria.html" class="font-medium text-indigo-700">Auditoría</a></li>
       </ul>
       <a href="auth-login.html" class="rounded-lg border border-stone-300 px-4 py-2 text-sm text-stone-800 transition hover:bg-stone-200">
         Cerrar sesión
@@ -22,121 +26,169 @@
 
   <main class="mx-auto max-w-5xl space-y-6 p-4 py-8">
     <div>
-      <h1 class="text-2xl font-semibold">Órdenes asignadas</h1>
-      <p class="mt-1 text-sm text-stone-500">Luis Torres</p>
+      <h1 class="text-2xl font-semibold">Bitácora de auditoría</h1>
+      <p class="mt-1 text-sm text-stone-500">Registro de quién cambió el estado de cada orden de servicio.</p>
     </div>
 
-    <!-- Tabla de órdenes del técnico (datos de ejemplo), de la más antigua a la más reciente -->
+    <!-- Tabla de solo lectura (datos de ejemplo), del cambio más reciente al más antiguo -->
     <section class="overflow-x-auto rounded-xl border border-stone-200 bg-white shadow-sm">
       <table class="w-full text-left text-sm">
-        <caption class="sr-only">Órdenes de servicio asignadas al técnico</caption>
+        <caption class="sr-only">Cambios de estado de las órdenes de servicio</caption>
         <thead class="border-b border-stone-200 text-stone-500">
           <tr>
+            <th scope="col" class="p-4 font-medium">Fecha y hora</th>
             <th scope="col" class="p-4 font-medium">Folio</th>
-            <th scope="col" class="p-4 font-medium">Equipo</th>
-            <th scope="col" class="p-4 font-medium">Falla reportada</th>
-            <th scope="col" class="p-4 font-medium">Prioridad</th>
-            <th scope="col" class="p-4 font-medium">Estado</th>
-            <th scope="col" class="p-4 font-medium">Recepción</th>
-            <th scope="col" class="p-4 font-medium">Entrega estimada</th>
-            <th scope="col" class="p-4 font-medium">Acción</th>
+            <th scope="col" class="p-4 font-medium">Estado anterior</th>
+            <th scope="col" class="p-4 font-medium">Estado nuevo</th>
+            <th scope="col" class="p-4 font-medium">Usuario</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-stone-100">
 
-          <!-- Rechazado -->
+          <!-- Orden nueva: no tiene estado anterior -->
           <tr class="hover:bg-stone-50">
-            <td class="p-4 font-medium">1052</td>
-            <td class="p-4">Celular Motorola G32</td>
-            <td class="p-4"><p class="max-w-xs truncate" title="Pantalla estrellada">Pantalla estrellada</p></td>
-            <td class="whitespace-nowrap p-4 text-stone-500">Normal</td>
-            <td class="whitespace-nowrap p-4">
-              <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-800">Rechazado</span>
-            </td>
-            <td class="whitespace-nowrap p-4">18 sep</td>
-            <td class="whitespace-nowrap p-4">—</td>
-            <td class="whitespace-nowrap p-4">
-              <a href="../daniel/tecnico-detalle-orden.html" class="font-medium text-indigo-700 hover:text-indigo-600">Abrir</a>
-            </td>
-          </tr>
-
-          <!-- Terminado -->
-          <tr class="hover:bg-stone-50">
-            <td class="p-4 font-medium">1055</td>
-            <td class="p-4">Celular Samsung Galaxy A32</td>
-            <td class="p-4"><p class="max-w-xs truncate" title="Cámara trasera borrosa">Cámara trasera borrosa</p></td>
-            <td class="whitespace-nowrap p-4 text-stone-500">Normal</td>
-            <td class="whitespace-nowrap p-4">
-              <span class="rounded-full bg-teal-100 px-3 py-1 text-xs font-medium text-teal-800">Terminado</span>
-            </td>
-            <td class="whitespace-nowrap p-4">24 sep</td>
-            <td class="whitespace-nowrap p-4">1 oct</td>
-            <td class="whitespace-nowrap p-4">
-              <a href="../daniel/tecnico-detalle-orden.html" class="font-medium text-indigo-700 hover:text-indigo-600">Abrir</a>
-            </td>
-          </tr>
-
-          <!-- Arreglando -->
-          <tr class="hover:bg-stone-50">
-            <td class="p-4 font-medium">1057</td>
-            <td class="p-4">Celular Huawei P30 Lite</td>
-            <td class="p-4"><p class="max-w-xs truncate" title="No enciende después de mojarse">No enciende después de mojarse</p></td>
-            <td class="whitespace-nowrap p-4 font-semibold text-stone-800">Urgente</td>
-            <td class="whitespace-nowrap p-4">
-              <span class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-800">Arreglando</span>
-            </td>
-            <td class="whitespace-nowrap p-4">25 sep</td>
-            <td class="whitespace-nowrap p-4">4 oct</td>
-            <td class="whitespace-nowrap p-4">
-              <a href="../daniel/tecnico-detalle-orden.html" class="font-medium text-indigo-700 hover:text-indigo-600">Abrir</a>
-            </td>
-          </tr>
-
-          <!-- En revisión: esperando la respuesta del cliente -->
-          <tr class="hover:bg-stone-50">
-            <td class="p-4 font-medium">1061</td>
-            <td class="p-4">Celular Samsung Galaxy A54</td>
-            <td class="p-4"><p class="max-w-xs truncate" title="Pantalla con rayas verdes; a veces no responde al tacto">Pantalla con rayas verdes; a veces no responde al tacto</p></td>
-            <td class="whitespace-nowrap p-4 text-stone-500">Normal</td>
-            <td class="whitespace-nowrap p-4">
-              <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">En revisión</span>
-            </td>
-            <td class="whitespace-nowrap p-4">29 sep</td>
-            <td class="whitespace-nowrap p-4">3 oct</td>
-            <td class="whitespace-nowrap p-4">
-              <a href="../daniel/tecnico-detalle-orden.html" class="font-medium text-indigo-700 hover:text-indigo-600">Abrir</a>
-            </td>
-          </tr>
-
-          <!-- En diagnóstico -->
-          <tr class="hover:bg-stone-50">
-            <td class="p-4 font-medium">1062</td>
-            <td class="p-4">Celular iPhone 11</td>
-            <td class="p-4"><p class="max-w-xs truncate" title="Se apaga solo y la batería dura muy poco">Se apaga solo y la batería dura muy poco</p></td>
-            <td class="whitespace-nowrap p-4 text-stone-500">Normal</td>
-            <td class="whitespace-nowrap p-4">
-              <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">En diagnóstico</span>
-            </td>
-            <td class="whitespace-nowrap p-4">30 sep</td>
-            <td class="whitespace-nowrap p-4">7 oct</td>
-            <td class="whitespace-nowrap p-4">
-              <a href="../daniel/tecnico-detalle-orden.html" class="font-medium text-indigo-700 hover:text-indigo-600">Abrir</a>
-            </td>
-          </tr>
-
-          <!-- Recibido: orden nueva, todavía sin empezar -->
-          <tr class="hover:bg-stone-50">
+            <td class="whitespace-nowrap p-4">2 oct 2026, 11:20</td>
             <td class="p-4 font-medium">1064</td>
-            <td class="p-4">Celular Xiaomi Redmi Note 12</td>
-            <td class="p-4"><p class="max-w-xs truncate" title="No carga; el puerto de carga se siente flojo">No carga; el puerto de carga se siente flojo</p></td>
-            <td class="whitespace-nowrap p-4 font-semibold text-stone-800">Urgente</td>
+            <td class="whitespace-nowrap p-4 text-stone-500">—</td>
             <td class="whitespace-nowrap p-4">
               <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">Recibido</span>
             </td>
-            <td class="whitespace-nowrap p-4">2 oct</td>
-            <td class="whitespace-nowrap p-4">9 oct</td>
             <td class="whitespace-nowrap p-4">
-              <a href="../daniel/tecnico-detalle-orden.html" class="font-medium text-indigo-700 hover:text-indigo-600">Abrir</a>
+              <p class="font-medium">Ana Martínez</p>
+              <p class="text-xs text-stone-500">Recepcionista</p>
+            </td>
+          </tr>
+
+          <tr class="hover:bg-stone-50">
+            <td class="whitespace-nowrap p-4">1 oct 2026, 16:40</td>
+            <td class="p-4 font-medium">1055</td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-800">Arreglando</span>
+            </td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-teal-100 px-3 py-1 text-xs font-medium text-teal-800">Terminado</span>
+            </td>
+            <td class="whitespace-nowrap p-4">
+              <p class="font-medium">Luis Torres</p>
+              <p class="text-xs text-stone-500">Técnico</p>
+            </td>
+          </tr>
+
+          <tr class="hover:bg-stone-50">
+            <td class="whitespace-nowrap p-4">30 sep 2026, 17:10</td>
+            <td class="p-4 font-medium">1061</td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">En diagnóstico</span>
+            </td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">En revisión</span>
+            </td>
+            <td class="whitespace-nowrap p-4">
+              <p class="font-medium">Luis Torres</p>
+              <p class="text-xs text-stone-500">Técnico</p>
+            </td>
+          </tr>
+
+          <tr class="hover:bg-stone-50">
+            <td class="whitespace-nowrap p-4">30 sep 2026, 15:45</td>
+            <td class="p-4 font-medium">1062</td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">Recibido</span>
+            </td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">En diagnóstico</span>
+            </td>
+            <td class="whitespace-nowrap p-4">
+              <p class="font-medium">Luis Torres</p>
+              <p class="text-xs text-stone-500">Técnico</p>
+            </td>
+          </tr>
+
+          <tr class="hover:bg-stone-50">
+            <td class="whitespace-nowrap p-4">30 sep 2026, 12:30</td>
+            <td class="p-4 font-medium">1062</td>
+            <td class="whitespace-nowrap p-4 text-stone-500">—</td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">Recibido</span>
+            </td>
+            <td class="whitespace-nowrap p-4">
+              <p class="font-medium">Ana Martínez</p>
+              <p class="text-xs text-stone-500">Recepcionista</p>
+            </td>
+          </tr>
+
+          <tr class="hover:bg-stone-50">
+            <td class="whitespace-nowrap p-4">29 sep 2026, 18:05</td>
+            <td class="p-4 font-medium">1061</td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">Recibido</span>
+            </td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">En diagnóstico</span>
+            </td>
+            <td class="whitespace-nowrap p-4">
+              <p class="font-medium">Luis Torres</p>
+              <p class="text-xs text-stone-500">Técnico</p>
+            </td>
+          </tr>
+
+          <tr class="hover:bg-stone-50">
+            <td class="whitespace-nowrap p-4">29 sep 2026, 10:20</td>
+            <td class="p-4 font-medium">1061</td>
+            <td class="whitespace-nowrap p-4 text-stone-500">—</td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">Recibido</span>
+            </td>
+            <td class="whitespace-nowrap p-4">
+              <p class="font-medium">Ana Martínez</p>
+              <p class="text-xs text-stone-500">Recepcionista</p>
+            </td>
+          </tr>
+
+          <!-- El cliente aprueba la cotización: la orden pasa a Arreglando a su nombre -->
+          <tr class="hover:bg-stone-50">
+            <td class="whitespace-nowrap p-4">26 sep 2026, 14:30</td>
+            <td class="p-4 font-medium">1057</td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">En revisión</span>
+            </td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-800">Arreglando</span>
+            </td>
+            <td class="whitespace-nowrap p-4">
+              <p class="font-medium">Ana Karen Gómez Díaz</p>
+              <p class="text-xs text-stone-500">Cliente</p>
+            </td>
+          </tr>
+
+          <tr class="hover:bg-stone-50">
+            <td class="whitespace-nowrap p-4">20 sep 2026, 13:10</td>
+            <td class="p-4 font-medium">1049</td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-teal-100 px-3 py-1 text-xs font-medium text-teal-800">Terminado</span>
+            </td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800">Entregado</span>
+            </td>
+            <td class="whitespace-nowrap p-4">
+              <p class="font-medium">Ana Martínez</p>
+              <p class="text-xs text-stone-500">Recepcionista</p>
+            </td>
+          </tr>
+
+          <!-- El cliente rechaza la cotización -->
+          <tr class="hover:bg-stone-50">
+            <td class="whitespace-nowrap p-4">19 sep 2026, 11:00</td>
+            <td class="p-4 font-medium">1052</td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">En revisión</span>
+            </td>
+            <td class="whitespace-nowrap p-4">
+              <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-800">Rechazado</span>
+            </td>
+            <td class="whitespace-nowrap p-4">
+              <p class="font-medium">José Luis Pérez Ramírez</p>
+              <p class="text-xs text-stone-500">Cliente</p>
             </td>
           </tr>
 

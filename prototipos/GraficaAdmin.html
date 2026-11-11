@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes y Estadísticas - TecnoFix Dolores</title>
+    <!-- Tailwind CSS por CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js por CDN para las gráficas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-stone-100 min-h-screen">
+
+    <!-- Navegación superior (Rol: Administrador) -->
+    <nav class="bg-white border-b border-stone-200 px-4 py-3 md:px-8 flex justify-between items-center shadow-sm">
+        <div class="flex items-center gap-8">
+            <h1 class="text-xl font-bold text-stone-800">TecnoFix Dolores</h1>
+
+            <div class="hidden md:flex gap-6">
+                <a href="#" class="text-sm text-stone-500 hover:text-indigo-600 transition">Dashboard</a>
+                <a href="#" class="text-sm text-stone-500 hover:text-indigo-600 transition">Órdenes</a>
+                <a href="#" class="text-sm text-stone-500 hover:text-indigo-600 transition">Clientes</a>
+                <a href="#" class="text-sm text-stone-500 hover:text-indigo-600 transition">Equipos</a>
+                <!-- Link activo -->
+                <a href="#" class="text-sm font-medium text-indigo-700">Reportes</a>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <div class="text-right hidden md:block">
+                <p class="text-sm font-medium text-stone-800">Roberto Salinas</p>
+                <p class="text-xs text-stone-500">Administrador</p>
+            </div>
+            <a href="#" class="text-sm font-medium text-stone-500 hover:text-stone-800 transition">Salir</a>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="mx-auto max-w-7xl p-4 md:p-8 mt-4">
+
+        <!-- Encabezado de la página -->
+        <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-stone-800">Reportes y Estadísticas</h2>
+                <p class="text-sm text-stone-500 mt-1">Consulta los indicadores clave del taller y el desempeño del equipo.</p>
+            </div>
+
+            <!-- Botones de Exportación -->
+            <div class="flex gap-3">
+                <button class="rounded-lg bg-white border border-stone-300 px-4 py-2 text-sm font-medium text-stone-800 hover:bg-stone-50 transition flex items-center gap-2">
+                    Exportar a Excel
+                </button>
+                <!-- Botón primario -->
+                <button class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center gap-2">
+                    Generar reporte PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Filtro de Fechas -->
+        <section class="rounded-xl border border-stone-200 bg-white p-4 shadow-sm mb-6 flex flex-wrap items-center gap-4">
+            <div class="flex items-center gap-2">
+                <label for="mes" class="text-sm font-medium text-stone-800">Periodo:</label>
+                <select id="mes" class="rounded-lg border border-stone-300 p-2 text-sm text-stone-800 focus:border-indigo-500 focus:outline-none bg-white">
+                    <option value="actual">Octubre 2026</option>
+                    <option value="anterior">Septiembre 2026</option>
+                    <option value="trimestre">Último trimestre</option>
+                </select>
+            </div>
+            <button class="text-sm font-medium text-indigo-700 hover:text-indigo-600 transition ml-auto">
+                Actualizar datos
+            </button>
+        </section>
+
+        <!-- Tarjetas de indicadores (KPIs) -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+                <h3 class="text-sm font-medium text-stone-500">Ingresos del periodo</h3>
+                <p class="text-3xl font-bold text-stone-800 mt-2">$24,500</p>
+                <p class="text-xs text-stone-500 mt-1">+12% vs mes anterior</p>
+            </section>
+
+            <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+                <h3 class="text-sm font-medium text-stone-500">Órdenes completadas</h3>
+                <p class="text-3xl font-bold text-stone-800 mt-2">68</p>
+                <p class="text-xs text-stone-500 mt-1">Prom. 17 a la semana</p>
+            </section>
+
+            <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+                <h3 class="text-sm font-medium text-stone-500">Tiempo prom. reparación</h3>
+                <p class="text-3xl font-bold text-stone-800 mt-2">2.5</p>
+                <p class="text-xs text-stone-500 mt-1">Días hábiles</p>
+            </section>
+
+            <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+                <h3 class="text-sm font-medium text-stone-500">Órdenes de garantía</h3>
+                <p class="text-3xl font-bold text-stone-800 mt-2">3</p>
+                <p class="text-xs text-stone-500 mt-1">4.4% del total</p>
+            </section>
+        </div>
+
+        <!-- Contenedor de Gráficas -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+
+            <!-- Gráfica 1: Ingresos por periodo -->
+            <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+                <h3 class="text-lg font-semibold text-stone-800 mb-4">Ingresos semanales (Octubre)</h3>
+                <canvas id="graficaIngresos" height="200"></canvas>
+            </section>
+
+            <!-- Gráfica 2: Órdenes por técnico -->
+            <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+                <h3 class="text-lg font-semibold text-stone-800 mb-4">Órdenes atendidas por técnico</h3>
+                <canvas id="graficaTecnicos" height="200"></canvas>
+            </section>
+
+        </div>
+
+        <!-- Tabla: Fallas más frecuentes -->
+        <section class="rounded-xl border border-stone-200 bg-white shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-stone-200">
+                <h3 class="text-lg font-semibold text-stone-800">Fallas reportadas con mayor frecuencia</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-stone-50 text-stone-500 border-b border-stone-200">
+                        <tr>
+                            <th class="px-6 py-4 font-medium">Descripción de la falla</th>
+                            <th class="px-6 py-4 font-medium">Tipo de equipo</th>
+                            <th class="px-6 py-4 font-medium text-right">Incidencias</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-stone-200 text-stone-800">
+                        <tr class="hover:bg-stone-50 transition">
+                            <td class="px-6 py-4 font-medium">Cambio de pantalla / Display roto</td>
+                            <td class="px-6 py-4 text-stone-500">Celulares</td>
+                            <td class="px-6 py-4 text-right">24</td>
+                        </tr>
+                        <tr class="hover:bg-stone-50 transition">
+                            <td class="px-6 py-4 font-medium">Reemplazo de batería</td>
+                            <td class="px-6 py-4 text-stone-500">Celulares / Tablets</td>
+                            <td class="px-6 py-4 text-right">18</td>
+                        </tr>
+                        <tr class="hover:bg-stone-50 transition">
+                            <td class="px-6 py-4 font-medium">Centro de carga dañado</td>
+                            <td class="px-6 py-4 text-stone-500">Celulares</td>
+                            <td class="px-6 py-4 text-right">15</td>
+                        </tr>
+                        <tr class="hover:bg-stone-50 transition">
+                            <td class="px-6 py-4 font-medium">Mantenimiento preventivo (Limpieza térmica)</td>
+                            <td class="px-6 py-4 text-stone-500">Laptops</td>
+                            <td class="px-6 py-4 text-right">8</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Script de Inicialización de Chart.js -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Configuración general para adaptar los colores al manual de diseño
+            Chart.defaults.color = '#78716c'; // text-stone-500
+            Chart.defaults.font.family = "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
+
+            // 1. Gráfica de Ingresos (Línea)
+            const ctxIngresos = document.getElementById('graficaIngresos').getContext('2d');
+            new Chart(ctxIngresos, {
+                type: 'line',
+                data: {
+                    labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
+                    datasets: [{
+                        label: 'Ingresos ($)',
+                        data: [5200, 6100, 5800, 7400],
+                        borderColor: '#4f46e5', // bg-indigo-600
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#e7e5e4' } }, // border-stone-200
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // 2. Gráfica de Técnicos (Barras)
+            const ctxTecnicos = document.getElementById('graficaTecnicos').getContext('2d');
+            new Chart(ctxTecnicos, {
+                type: 'bar',
+                data: {
+                    labels: ['Luis Torres (Celulares)', 'Jorge Ramírez (Laptops/Tablets)'],
+                    datasets: [{
+                        label: 'Órdenes Completadas',
+                        data: [42, 26],
+                        backgroundColor: ['#4f46e5', '#818cf8'], // indigo-600 e indigo-400
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#e7e5e4' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

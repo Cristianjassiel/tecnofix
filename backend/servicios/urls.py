@@ -9,6 +9,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 
 from . import views
+from .urls_bryan import urlpatterns as urls_bryan
 
 urlpatterns = [
     # Autenticación
@@ -32,3 +33,5 @@ urlpatterns = [
     # Administración
     path("administracion/auditoria/", views.admin_auditoria, name="admin_auditoria"),
 ]
+
+urlpatterns += urls_bryan

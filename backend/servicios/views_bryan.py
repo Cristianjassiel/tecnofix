@@ -2,8 +2,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.utils import timezone
+from django.contrib.auth.views import PasswordResetView
+from django.urls import reverse_lazy
+
 from .models import OrdenServicio, Estado, TransicionInvalida
 from .permisos import solo_cliente
+from .forms_bryan import RecuperarPasswordForm
 
 @solo_cliente
 def aprobar_cotizacion(request, folio):
@@ -46,3 +50,10 @@ def aprobar_cotizacion(request, folio):
             messages.error(request, str(error))
             
     return render(request, 'cliente/aprobar_cotizacion.html', {'orden': orden})
+
+
+class CustomPasswordResetView(PasswordResetView):
+    """Vista pública para solicitar restablecimiento de contraseña."""
+    template_name = 'auth/password_reset.html'
+    form_class = RecuperarPasswordForm
+    success_url = reverse_lazy('password_reset_done')

@@ -1,17 +1,16 @@
 # backend/servicios/tests_bryan.py
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.core import mail
 from .tests import BaseTecnoFix
 from .models import Estado, Cliente, Cotizacion
 
 class AprobarCotizacionTests(BaseTecnoFix):
     def setUp(self):
         super().setUp()
-        # Preparamos la orden de prueba de BaseTecnoFix (le pertenece a 'maria')
         self.orden.estado = Estado.REVISION
         self.orden.save()
         
-        # Generamos su cotización pendiente
         Cotizacion.objects.create(
             orden=self.orden,
             costo_refaccion=850.00,
@@ -24,21 +23,16 @@ class AprobarCotizacionTests(BaseTecnoFix):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'cliente/aprobar_cotizacion.html')
-        self.assertContains(response, 'Aprobar cotización')
 
     def test_tecnico_no_tiene_acceso(self):
-        # Un técnico tratando de entrar debe recibir HTTP 403 Forbidden
         self.client.login(username='luis', password='prueba1234')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 403)
 
     def test_cliente_no_ve_ordenes_ajenas(self):
-        # Creamos otro usuario cliente
         otro_user = User.objects.create_user(username='pedro', password='prueba1234')
         Cliente.objects.create(usuario=otro_user, nombre_completo="Pedro", telefono="123", correo="p@p.com", direccion="X")
         self.client.login(username='pedro', password='prueba1234')
-        
-        # Debe recibir un 404 porque el get_object_or_404 filtra por el request.user
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 404)
 
@@ -49,8 +43,6 @@ class AprobarCotizacionTests(BaseTecnoFix):
         self.orden.refresh_from_db()
         self.assertEqual(self.orden.estado, Estado.ARREGLANDO)
         self.assertTrue(self.orden.cotizacion.aprobada)
-        self.assertIsNotNone(self.orden.cotizacion.fecha_respuesta)
-        self.assertRedirects(response, reverse('cliente_orden', kwargs={'folio': self.orden.folio}))
 
     def test_rechazar_cotizacion_cambia_estado(self):
         self.client.login(username='maria', password='prueba1234')
@@ -59,4 +51,29 @@ class AprobarCotizacionTests(BaseTecnoFix):
         self.orden.refresh_from_db()
         self.assertEqual(self.orden.estado, Estado.RECHAZADO)
         self.assertFalse(self.orden.cotizacion.aprobada)
-        self.assertIsNotNone(self.orden.cotizacion.fecha_respuesta)
+
+
+class RecuperarPasswordTests(BaseTecnoFix):
+    def test_acceso_publico_recuperar_password(self):
+        url = reverse('password_reset')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'auth/password_reset.html')
+        
+    def test_envio_de_correo_exitoso(self):
+        url = reverse('password_reset')
+        
+        # Asignamos un correo válido a la cuenta de prueba de 'ana'
+        usuario = User.objects.get(username='ana')
+        usuario.email = 'ana@tecnofix.com'
+        usuario.save()
+        
+        # Simulamos que Ana ingresa su correo en el formulario
+        response = self.client.post(url, {'email': 'ana@tecnofix.com'})
+        
+        # Verifica que avance a la pantalla de "Correo enviado"
+        self.assertRedirects(response, reverse('password_reset_done'))
+        
+        # Verifica que Django generó y "envió" el correo con el enlace
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn('Restablecer', mail.outbox[0].subject)

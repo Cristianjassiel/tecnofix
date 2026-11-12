@@ -4,13 +4,17 @@ from . import views_bryan
 from . import forms_bryan
 
 urlpatterns = [
-    # --- PANTALLA DE CLIENTE ---
+    # --- PANTALLAS DE CLIENTE ---
     path('ordenes/<str:folio>/aprobar/', views_bryan.aprobar_cotizacion, name='aprobar_cotizacion'),
     path('mis-ordenes/<str:folio>/calificar/', views_bryan.calificar_servicio, name='calificar'),
     
     # --- PANTALLAS DE RECEPCIÓN ---
     path('recepcion/clientes/', views_bryan.lista_clientes, name='clientes'),
     path('recepcion/entrega-cobro/<str:folio>/', views_bryan.entrega_cobro, name='entrega_cobro'),
+    
+    # --- PANTALLAS DE ADMINISTRACIÓN ---
+    path('administracion/usuarios/', views_bryan.admin_usuarios, name='admin_usuarios'),
+    path('administracion/catalogo/', views_bryan.admin_catalogo, name='admin_catalogo'),
     
     # --- FLUJO DE RECUPERAR CONTRASEÑA ---
     path('recuperar-password/', views_bryan.CustomPasswordResetView.as_view(), name='password_reset'),

@@ -40,15 +40,18 @@ def aprobar_cotizacion(request, folio):
             messages.error(request, str(error))
     return render(request, 'cliente/aprobar_cotizacion.html', {'orden': orden})
 
+
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'auth/password_reset.html'
     form_class = RecuperarPasswordForm
     success_url = reverse_lazy('password_reset_done')
 
+
 @solo_recepcion
 def lista_clientes(request):
     clientes = Cliente.objects.all().order_by('nombre_completo')
     return render(request, 'recepcion/lista_clientes.html', {'clientes': clientes})
+
 
 @solo_recepcion
 def entrega_cobro(request, folio):
@@ -69,6 +72,7 @@ def entrega_cobro(request, folio):
     else:
         form = EntregaCobroForm()
     return render(request, 'recepcion/entrega_cobro.html', {'orden': orden, 'form': form})
+
 
 @solo_cliente
 def calificar_servicio(request, folio):
@@ -95,8 +99,19 @@ def calificar_servicio(request, folio):
         form = CalificarServicioForm()
     return render(request, 'cliente/calificar.html', {'orden': orden, 'form': form})
 
+
 @solo_admin
 def admin_usuarios(request):
-    """Pantalla de administración para ver todos los usuarios del sistema."""
-    usuarios = User.objects.all().order_by('username')
+    if request.method == 'POST':
+        usuario = get_object_or_404(User, pk=request.POST.get('usuario_id'))
+        if usuario == request.user:
+            messages.error(request, 'No puedes desactivar tu propia cuenta.')
+        else:
+            usuario.is_active = not usuario.is_active
+            usuario.save(update_fields=['is_active'])
+            estado = 'activado' if usuario.is_active else 'desactivado'
+            messages.success(request, f'Usuario {usuario.username} {estado}.')
+        return redirect('admin_usuarios')
+
+    usuarios = User.objects.prefetch_related('groups').order_by('username')
     return render(request, 'administracion/admin_usuarios.html', {'usuarios': usuarios})

@@ -5,6 +5,7 @@ from django.contrib.auth.models import User, Group
 from .tests import BaseTecnoFix
 from .models import Estado, Cliente, Cotizacion, Calificacion
 
+
 class AprobarCotizacionTests(BaseTecnoFix):
     def setUp(self):
         super().setUp()
@@ -121,6 +122,9 @@ class EntregaCobroTests(BaseTecnoFix):
         self.client.login(username='ana', password='prueba1234')
         response = self.client.get(self.url)
         self.assertRedirects(response, reverse('clientes'))
+        # Assert devuelto:
+        self.orden.refresh_from_db()
+        self.assertEqual(self.orden.estado, Estado.ARREGLANDO)
 
 
 class CalificarServicioTests(BaseTecnoFix):
@@ -161,6 +165,8 @@ class CalificarServicioTests(BaseTecnoFix):
         response = self.client.post(self.url, {'calificacion': 5, 'comentario': 'Excelente servicio'})
         calificacion = Calificacion.objects.get(orden=self.orden)
         self.assertEqual(calificacion.puntuacion, 5)
+        # Assert devuelto:
+        self.assertEqual(calificacion.comentario, 'Excelente servicio')
         self.assertRedirects(response, reverse('cliente_orden', kwargs={'folio': self.orden.folio}))
 
     def test_no_se_puede_calificar_dos_veces(self):
@@ -169,6 +175,8 @@ class CalificarServicioTests(BaseTecnoFix):
         response = self.client.post(self.url, {'calificacion': 5, 'comentario': 'otra vez'})
         self.assertRedirects(response, reverse('cliente_orden', kwargs={'folio': self.orden.folio}))
         self.assertEqual(Calificacion.objects.filter(orden=self.orden).count(), 1)
+        # Assert devuelto:
+        self.assertEqual(Calificacion.objects.get(orden=self.orden).puntuacion, 4)
 
 
 class AdminUsuariosTests(BaseTecnoFix):
@@ -196,3 +204,36 @@ class AdminUsuariosTests(BaseTecnoFix):
         self.client.login(username='maria', password='prueba1234')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 403)
+
+    # --- NUEVOS TESTS DE GESTIÓN DE USUARIOS ---
+    
+    def test_admin_ve_el_rol_de_cada_usuario(self):
+        self.client.login(username='jefe', password='prueba1234')
+        response = self.client.get(self.url)
+        self.assertContains(response, 'Recepcionista')
+
+    def test_admin_puede_desactivar_y_activar_a_otro_usuario(self):
+        self.client.login(username='jefe', password='prueba1234')
+        
+        # Desactiva
+        self.client.post(self.url, {'usuario_id': self.ana.pk})
+        self.ana.refresh_from_db()
+        self.assertFalse(self.ana.is_active)
+        
+        # Activa
+        self.client.post(self.url, {'usuario_id': self.ana.pk})
+        self.ana.refresh_from_db()
+        self.assertTrue(self.ana.is_active)
+
+    def test_admin_no_puede_desactivarse_a_si_mismo(self):
+        self.client.login(username='jefe', password='prueba1234')
+        self.client.post(self.url, {'usuario_id': self.admin_user.pk})
+        self.admin_user.refresh_from_db()
+        self.assertTrue(self.admin_user.is_active)
+
+    def test_recepcion_no_puede_cambiar_usuarios(self):
+        self.client.login(username='ana', password='prueba1234')
+        response = self.client.post(self.url, {'usuario_id': self.luis.pk})
+        self.assertEqual(response.status_code, 403)
+        self.luis.refresh_from_db()
+        self.assertTrue(self.luis.is_active)

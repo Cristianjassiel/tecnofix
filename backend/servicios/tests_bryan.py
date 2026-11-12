@@ -5,6 +5,8 @@ from django.core import mail
 from .tests import BaseTecnoFix
 from .models import Estado, Cliente, Cotizacion
 
+from django.contrib.auth.models import User, Group
+
 class AprobarCotizacionTests(BaseTecnoFix):
     def setUp(self):
         super().setUp()
@@ -31,6 +33,7 @@ class AprobarCotizacionTests(BaseTecnoFix):
 
     def test_cliente_no_ve_ordenes_ajenas(self):
         otro_user = User.objects.create_user(username='pedro', password='prueba1234')
+        otro_user.groups.add(Group.objects.get(name="Cliente")) # <- LÍNEA NUEVA
         Cliente.objects.create(usuario=otro_user, nombre_completo="Pedro", telefono="123", correo="p@p.com", direccion="X")
         self.client.login(username='pedro', password='prueba1234')
         response = self.client.get(self.url)

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block titulo %}Catálogo de Servicios — TecnoFix Dolores{% endblock %}
+
+{% block contenido %}
+<div class="mx-auto max-w-6xl px-5 py-8">
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-stone-800">Catálogo de Servicios y Refacciones</h1>
+      <p class="mt-1 text-sm text-stone-500">Lista de precios de referencia para uso de los técnicos al cotizar.</p>
+    </div>
+  </div>
+
+  <div class="overflow-hidden rounded-xl border border-stone-200 bg-white shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm text-stone-600">
+        <thead class="border-b border-stone-200 bg-stone-50 text-xs uppercase text-stone-700">
+          <tr>
+            <th scope="col" class="px-6 py-4 font-semibold">Nombre del Servicio / Refacción</th>
+            <th scope="col" class="px-6 py-4 font-semibold">Tipo de Equipo</th>
+            <th scope="col" class="px-6 py-4 font-semibold">Precio de Refacción</th>
+            <th scope="col" class="px-6 py-4 font-semibold">Precio Mano de Obra</th>
+            <th scope="col" class="px-6 py-4 font-semibold">Estado</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-stone-200">
+          {% for s in servicios %}
+            <tr class="hover:bg-stone-50 transition">
+              <td class="px-6 py-4 font-medium text-stone-900">{{ s.nombre }}</td>
+              <td class="px-6 py-4">{{ s.get_tipo_equipo_display|default:"General" }}</td>
+              <td class="px-6 py-4">${{ s.precio_refaccion|floatformat:"2g" }}</td>
+              <td class="px-6 py-4">${{ s.precio_mano_obra|floatformat:"2g" }}</td>
+              
+              <td class="px-6 py-4">
+                {% if s.activo %}
+                  <span class="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Activo</span>
+                {% else %}
+                  <span class="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">Inactivo</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="5" class="px-6 py-8 text-center text-stone-500">El catálogo está vacío.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

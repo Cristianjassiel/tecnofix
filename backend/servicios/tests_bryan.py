@@ -1,11 +1,9 @@
 # backend/servicios/tests_bryan.py
 from django.urls import reverse
-from django.contrib.auth.models import User
 from django.core import mail
+from django.contrib.auth.models import User, Group
 from .tests import BaseTecnoFix
 from .models import Estado, Cliente, Cotizacion
-
-from django.contrib.auth.models import User, Group
 
 class AprobarCotizacionTests(BaseTecnoFix):
     def setUp(self):
@@ -33,7 +31,7 @@ class AprobarCotizacionTests(BaseTecnoFix):
 
     def test_cliente_no_ve_ordenes_ajenas(self):
         otro_user = User.objects.create_user(username='pedro', password='prueba1234')
-        otro_user.groups.add(Group.objects.get(name="Cliente")) # <- LÍNEA NUEVA
+        otro_user.groups.add(Group.objects.get(name="Cliente"))
         Cliente.objects.create(usuario=otro_user, nombre_completo="Pedro", telefono="123", correo="p@p.com", direccion="X")
         self.client.login(username='pedro', password='prueba1234')
         response = self.client.get(self.url)
@@ -79,22 +77,20 @@ class RecuperarPasswordTests(BaseTecnoFix):
         
         # Verifica que Django generó y "envió" el correo con el enlace
         self.assertEqual(len(mail.outbox), 1)
-        self.assertIn('Restablecer', mail.outbox[0].subject)
+        self.assertIn('Restablecimiento', mail.outbox[0].subject)
         
         
 class ListaClientesTests(BaseTecnoFix):
-    def test_tecnico_puede_ver_lista_clientes(self):
-        # luis es un usuario de prueba con rol de técnico
-        self.client.login(username='luis', password='prueba1234')
-        response = self.client.get(reverse('lista_clientes'))
+    def test_recepcion_puede_ver_lista_clientes(self):
+        self.client.login(username='ana', password='prueba1234')
+        response = self.client.get(reverse('clientes'))
         
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'tecnico/lista_clientes.html')
+        self.assertTemplateUsed(response, 'recepcion/lista_clientes.html')
         self.assertIn('clientes', response.context)
 
     def test_cliente_no_tiene_acceso_a_lista(self):
-        # maria es una cliente, no debería poder ver el directorio
         self.client.login(username='maria', password='prueba1234')
-        response = self.client.get(reverse('lista_clientes'))
+        response = self.client.get(reverse('clientes'))
         
         self.assertEqual(response.status_code, 403)

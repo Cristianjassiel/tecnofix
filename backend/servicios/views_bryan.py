@@ -63,12 +63,6 @@ class CustomPasswordResetView(PasswordResetView):
     form_class = RecuperarPasswordForm
     success_url = reverse_lazy('password_reset_done')
     
-    
-@solo_tecnico
-def lista_clientes(request):
-    """Muestra un directorio de todos los clientes registrados al técnico."""
-    clientes = Cliente.objects.all().order_by('nombre_completo')
-    return render(request, 'tecnico/lista_clientes.html', {'clientes': clientes})
 
 
 @solo_recepcion

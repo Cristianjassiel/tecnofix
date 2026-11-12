@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.core import mail
 from django.contrib.auth.models import User, Group
 from .tests import BaseTecnoFix
-from .models import Estado, Cliente, Cotizacion
+from .models import Estado, Cliente, Cotizacion, Calificacion
 
 class AprobarCotizacionTests(BaseTecnoFix):
     def setUp(self):
@@ -141,3 +141,59 @@ class EntregaCobroTests(BaseTecnoFix):
         self.assertRedirects(response, reverse('clientes'))
         self.orden.refresh_from_db()
         self.assertEqual(self.orden.estado, Estado.ARREGLANDO)
+
+
+class CalificarServicioTests(BaseTecnoFix):
+    def setUp(self):
+        super().setUp()
+        self.orden.estado = Estado.ENTREGADO
+        self.orden.save()
+        self.url = reverse('calificar', kwargs={'folio': self.orden.folio})
+
+    def test_cliente_puede_ver_pantalla_calificar(self):
+        self.client.login(username='maria', password='prueba1234')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'cliente/calificar.html')
+
+    def test_recepcion_no_tiene_acceso(self):
+        self.client.login(username='ana', password='prueba1234')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 403)
+        
+    def test_cliente_no_ve_ordenes_ajenas(self):
+        otro_user = User.objects.create_user(username='pedro2', password='prueba1234')
+        otro_user.groups.add(Group.objects.get(name="Cliente"))
+        Cliente.objects.create(usuario=otro_user, nombre_completo="Pedro 2", telefono="123", correo="p@p.com", direccion="X")
+        self.client.login(username='pedro2', password='prueba1234')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_no_entregada_redirige(self):
+        self.orden.estado = Estado.ARREGLANDO
+        self.orden.save()
+        
+        self.client.login(username='maria', password='prueba1234')
+        response = self.client.get(self.url)
+        
+        self.assertRedirects(response, reverse('cliente_orden', kwargs={'folio': self.orden.folio}))
+        
+    def test_post_exitoso_guarda_calificacion(self):
+        self.client.login(username='maria', password='prueba1234')
+        response = self.client.post(self.url, {
+            'calificacion': 5,
+            'comentario': 'Excelente servicio, muy rápido.'
+        })
+        
+        calificacion = Calificacion.objects.get(orden=self.orden)
+        self.assertEqual(calificacion.puntuacion, 5)
+        self.assertEqual(calificacion.comentario, 'Excelente servicio, muy rápido.')
+        self.assertRedirects(response, reverse('cliente_orden', kwargs={'folio': self.orden.folio}))
+
+    def test_no_se_puede_calificar_dos_veces(self):
+        Calificacion.objects.create(orden=self.orden, puntuacion=4)
+        self.client.login(username='maria', password='prueba1234')
+        response = self.client.post(self.url, {'calificacion': 5, 'comentario': 'otra vez'})
+        self.assertRedirects(response, reverse('cliente_orden', kwargs={'folio': self.orden.folio}))
+        self.assertEqual(Calificacion.objects.filter(orden=self.orden).count(), 1)
+        self.assertEqual(Calificacion.objects.get(orden=self.orden).puntuacion, 4)

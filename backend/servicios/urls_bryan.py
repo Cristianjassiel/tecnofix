@@ -6,6 +6,7 @@ from . import forms_bryan
 urlpatterns = [
     # --- PANTALLA DE CLIENTE ---
     path('ordenes/<str:folio>/aprobar/', views_bryan.aprobar_cotizacion, name='aprobar_cotizacion'),
+    path('mis-ordenes/<str:folio>/calificar/', views_bryan.calificar_servicio, name='calificar'),
     
     # --- PANTALLAS DE RECEPCIÓN ---
     path('recepcion/clientes/', views_bryan.lista_clientes, name='clientes'),

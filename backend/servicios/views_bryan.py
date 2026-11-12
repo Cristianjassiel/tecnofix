@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.contrib.auth.views import PasswordResetView
 from django.urls import reverse_lazy
 
-from .models import OrdenServicio, Estado, TransicionInvalida, Cliente
+from .models import OrdenServicio, Estado, TransicionInvalida, Cliente, Calificacion
 from .permisos import solo_cliente, solo_recepcion
 from .forms_bryan import RecuperarPasswordForm, EntregaCobroForm
 
@@ -80,3 +80,36 @@ def entrega_cobro(request, folio):
         form = EntregaCobroForm()
             
     return render(request, 'recepcion/entrega_cobro.html', {'orden': orden, 'form': form})
+
+
+@solo_cliente
+def calificar_servicio(request, folio):
+    """Permite al cliente calificar un servicio que ya fue entregado."""
+    orden = get_object_or_404(OrdenServicio, folio=folio, equipo__cliente__usuario=request.user)
+    
+    if orden.estado != Estado.ENTREGADO:
+        messages.error(request, "Solo puedes calificar servicios que ya te han sido entregados.")
+        return redirect('cliente_orden', folio=orden.folio)
+        
+    if Calificacion.objects.filter(orden=orden).exists():
+        messages.info(request, 'Ya calificaste este servicio. ¡Gracias!')
+        return redirect('cliente_orden', folio=orden.folio)
+        
+    if request.method == 'POST':
+        from .forms_bryan import CalificarServicioForm
+        form = CalificarServicioForm(request.POST)
+        
+        if form.is_valid():
+            Calificacion.objects.create(
+                orden=orden,
+                puntuacion=form.cleaned_data['calificacion'],
+                comentario=form.cleaned_data['comentario'],
+            )
+            
+            messages.success(request, "¡Gracias por tus comentarios! Tu calificación ha sido guardada.")
+            return redirect('cliente_orden', folio=orden.folio)
+    else:
+        from .forms_bryan import CalificarServicioForm
+        form = CalificarServicioForm()
+            
+    return render(request, 'cliente/calificar.html', {'orden': orden, 'form': form})

@@ -9,11 +9,11 @@
 <body class="bg-stone-100 text-stone-800 {% block clases_body %}{% endblock %}">
   {% block navbar %}
   <header class="border-b border-stone-200 bg-stone-100 text-stone-800 print:hidden">
-    <nav class="mx-auto flex max-w-5xl items-center justify-between gap-4 p-4">
+    <nav class="mx-auto flex max-w-5xl items-center justify-between flex-wrap gap-4 p-4">
       <a href="{% url 'inicio' %}" class="text-lg font-semibold">TecnoFix Dolores</a>
 
       {% if user.is_authenticated %}
-        <ul class="hidden gap-4 text-sm md:flex lg:gap-6">
+        <ul class="flex flex-wrap gap-3 text-sm">
           {% if rol_actual == "Recepcionista" %}
             {% navlink 'nueva_orden' 'Nueva orden' request %}
             {% navlink 'equipo_nuevo' 'Nuevo equipo' request %}
@@ -29,6 +29,9 @@
             {% navlink 'admin_dashboard' 'Dashboard' request %}
             {% navlink 'buscar_ordenes' 'Órdenes' request %}
             {% navlink 'admin_auditoria' 'Auditoría' request %}
+            {% navlink 'clientes' 'Clientes' request %}
+            {% navlink 'equipos' 'Equipos' request %}
+            {% navlink 'reportes' 'Reportes' request %}
             {% navlink 'admin_usuarios' 'Usuarios' request %}
             {% navlink 'admin_catalogo' 'Catálogo' request %}
           {% endif %}

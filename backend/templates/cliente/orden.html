@@ -161,7 +161,7 @@
       <div class="mt-4 grid gap-3 sm:grid-cols-3">
         {% for evidencia in orden.evidencias.all %}
           <figure>
-            <img src="{{ evidencia.imagen.url }}" alt="{{ evidencia.get_momento_display }}" class="aspect-video w-full rounded-lg object-cover">
+            <img src="{% url 'evidencia' evidencia.pk %}" alt="{{ evidencia.get_momento_display }}" class="aspect-video w-full rounded-lg object-cover">
             <figcaption class="mt-1 text-xs text-stone-500">{{ evidencia.get_momento_display }}</figcaption>
           </figure>
         {% endfor %}

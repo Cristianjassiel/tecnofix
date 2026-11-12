@@ -10,6 +10,7 @@ from django.urls import path
 
 from . import views
 from .urls_bryan import urlpatterns as urls_bryan
+from .urls_daniel import urlpatterns as urls_daniel
 
 urlpatterns = [
     # Autenticación
@@ -35,3 +36,4 @@ urlpatterns = [
 ]
 
 urlpatterns += urls_bryan
+urlpatterns += urls_daniel

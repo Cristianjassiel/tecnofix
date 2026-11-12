@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block titulo %}Reportes{% endblock %}
+{% block contenido %}
+<h1 class="text-2xl font-bold">Reportes del taller</h1>
+<p class="text-stone-500">Ingresos y órdenes entregadas, según la fecha de entrega registrada.</p>
+<section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+<form method="get" class="flex flex-wrap items-end gap-4">{{ form.non_field_errors }}<div>{{ form.fecha_inicio.label_tag }}{{ form.fecha_inicio }}{{ form.fecha_inicio.errors }}</div>
+<div>{{ form.fecha_fin.label_tag }}{{ form.fecha_fin }}{{ form.fecha_fin.errors }}</div>
+<button class="bg-indigo-600 text-white rounded-lg px-5 py-2">Aplicar periodo</button>
+<a href="{% url 'reportes' %}">Limpiar</a>
+</form>
+</section>
+<div class="grid md:grid-cols-2 gap-6">
+<section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+<h2>Ingresos registrados</h2>
+<p class="text-3xl font-bold">${{ total|floatformat:2 }} MXN</p>
+</section>
+<section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+<h2>Órdenes entregadas</h2>
+<p class="text-3xl font-bold">{{ cantidad }}</p>
+</section>
+<section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+<h2 class="font-semibold mb-4">Ingresos por mes</h2>
+<canvas id="graficaIngresos" aria-label="Ingresos por mes" role="img">
+</canvas>
+<table class="w-full mt-4 text-sm">
+<thead>
+<tr>
+<th class="text-left">Mes</th>
+<th>Importe (MXN)</th>
+</tr>
+</thead>
+<tbody>{% for mes in meses %}<tr>
+<td>{{ mes.mes|date:'Y-m' }}</td>
+<td class="text-right">${{ mes.total|floatformat:2 }}</td>
+</tr>{% empty %}<tr>
+<td colspan="2">Sin ingresos en este periodo.</td>
+</tr>{% endfor %}</tbody>
+</table>
+</section>
+<section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+<h2 class="font-semibold mb-4">Órdenes por técnico</h2>
+<canvas id="graficaTecnicos" aria-label="Órdenes entregadas por técnico" role="img">
+</canvas>
+<table class="w-full mt-4 text-sm">
+<thead>
+<tr>
+<th class="text-left">Técnico</th>
+<th>Entregadas</th>
+</tr>
+</thead>
+<tbody>{% for tecnico in tecnicos %}<tr>
+<td>{{ tecnico.tecnico__username|default:'Sin técnico' }}</td>
+<td class="text-right">{{ tecnico.total }}</td>
+</tr>{% empty %}<tr>
+<td colspan="2">Sin órdenes entregadas.</td>
+</tr>{% endfor %}</tbody>
+</table>
+</section>
+</div>{{ graficas|json_script:'datos-reportes' }}<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js">
+</script>
+<script>if(window.Chart){const d=JSON.parse(document.getElementById('datos-reportes').textContent);new Chart(document.getElementById('graficaIngresos'),{type:'line',data:{labels:d.meses,datasets:[{label:'MXN',data:d.ingresos,borderColor:'#4f46e5'}]},options:{scales:{y:{beginAtZero:true}}}});new Chart(document.getElementById('graficaTecnicos'),{type:'bar',data:{labels:d.tecnicos,datasets:[{label:'Órdenes entregadas',data:d.ordenes,backgroundColor:'#4f46e5'}]},options:{scales:{y:{beginAtZero:true,ticks:{precision:0}}}}});}</script>
+{% endblock %}

@@ -1,0 +1,24 @@
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm">
+<thead class="bg-stone-50 text-stone-500">
+<tr>
+<th class="p-4">Folio</th>
+<th class="p-4">Cliente</th>
+<th class="p-4">Equipo</th>
+<th class="p-4">Estado</th>
+<th class="p-4">Técnico</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-stone-200">{% for orden in ordenes %}<tr class="hover:bg-stone-50">
+<td class="p-4">
+<a class="text-indigo-700 font-medium" href="{% url 'ticket' orden.folio %}">#{{ orden.folio }}</a>
+</td>
+<td class="p-4">{{ orden.equipo.cliente }}</td>
+<td class="p-4">{{ orden.equipo }}</td>
+<td class="p-4">{{ orden.get_estado_display }}</td>
+<td class="p-4">{{ orden.tecnico.get_full_name|default:orden.tecnico.username }}</td>
+</tr>{% empty %}<tr>
+<td class="p-6 text-stone-500" colspan="5">No hay órdenes que mostrar.</td>
+</tr>{% endfor %}</tbody>
+</table>
+</div>

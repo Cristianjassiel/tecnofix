@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block titulo %}Generar cotización{% endblock %}
+{% block contenido %}
+<div class="flex justify-between">
+<div>
+<h1 class="text-2xl font-bold">Generar Cotización</h1>
+<p class="text-sm text-stone-500">Orden #{{ orden.folio }} · {{ orden.equipo }} · {{ orden.equipo.cliente }}</p>
+</div>
+<a class="text-indigo-700" href="{% url 'tecnico_orden' orden.folio %}">Volver al detalle</a>
+</div>
+<div class="grid md:grid-cols-3 gap-6">
+<section class="md:col-span-2 rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+<form method="post" class="space-y-6">{% csrf_token %}{% include 'compartidos/campos.html' %}<button class="rounded-lg bg-indigo-600 text-white px-5 py-2" type="submit">Enviar cotización al cliente</button>
+</form>
+</section>
+<aside class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+<h2 class="font-semibold">Resumen de costos</h2>
+<p class="text-sm text-stone-500 mt-3">Refacciones + mano de obra</p>
+<p class="text-3xl font-bold mt-3" id="total-cotizacion">$0.00 MXN</p>
+<p class="text-sm text-stone-500 mt-4">El cargo de diagnóstico solo se aplica si el cliente rechaza la cotización.</p>
+</aside>
+</div>
+<script>const campos=['id_costo_refaccion','id_costo_mano_obra'];function total(){const suma=campos.reduce((s,id)=>s+(Number(document.getElementById(id).value)||0),0);document.getElementById('total-cotizacion').textContent=new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN'}).format(suma)+' MXN';}campos.forEach(id=>document.getElementById(id).addEventListener('input',total));total();</script>
+{% endblock %}

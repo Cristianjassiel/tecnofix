@@ -94,3 +94,31 @@ class ListaClientesTests(BaseTecnoFix):
         response = self.client.get(reverse('clientes'))
         
         self.assertEqual(response.status_code, 403)
+        
+
+class EntregaCobroTests(BaseTecnoFix):
+    def setUp(self):
+        super().setUp()
+        Cotizacion.objects.create(
+            orden=self.orden,
+            costo_refaccion=100.00,
+            costo_mano_obra=200.00,
+            aprobada=True
+        )
+        self.url = reverse('entrega_cobro', kwargs={'folio': self.orden.folio})
+
+    def test_recepcion_puede_ver_pantalla_cobro(self):
+        self.client.login(username='ana', password='prueba1234') # ana es recepción
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'recepcion/entrega_cobro.html')
+
+    def test_cliente_no_tiene_acceso_a_cobro(self):
+        self.client.login(username='maria', password='prueba1234') # maria es cliente
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 403)
+        
+    def test_tecnico_no_tiene_acceso_a_cobro(self):
+        self.client.login(username='luis', password='prueba1234') # luis es técnico
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 403)

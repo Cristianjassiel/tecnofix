@@ -71,3 +71,19 @@ def lista_clientes(request):
     clientes = Cliente.objects.all().order_by('nombre_completo')
     # Actualiza la ruta del render
     return render(request, 'recepcion/lista_clientes.html', {'clientes': clientes})
+
+@solo_recepcion
+def entrega_cobro(request, folio):
+    """Procesa el pago y entrega del equipo por parte de recepción."""
+    orden = get_object_or_404(OrdenServicio, folio=folio)
+    
+    if request.method == 'POST':
+        try:
+            # Asumimos que existe Estado.ENTREGADO en tu modelo de Estados
+            orden.cambiar_estado(Estado.ENTREGADO, request.user, "Se recibió el pago y el equipo fue entregado al cliente.")
+            messages.success(request, f"La orden {folio} ha sido cobrada y entregada exitosamente.")
+            return redirect('clientes')
+        except TransicionInvalida as error:
+            messages.error(request, str(error))
+            
+    return render(request, 'recepcion/entrega_cobro.html', {'orden': orden})

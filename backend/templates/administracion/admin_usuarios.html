@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block titulo %}Gestión de Usuarios — TecnoFix Dolores{% endblock %}
+
+{% block contenido %}
+<div class="mx-auto max-w-6xl px-5 py-8">
+  <div class="mb-6 flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-stone-800">Gestión de Usuarios</h1>
+      <p class="mt-1 text-sm text-stone-500">Directorio de todos los usuarios registrados en el sistema.</p>
+    </div>
+  </div>
+
+  <div class="overflow-hidden rounded-xl border border-stone-200 bg-white shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm text-stone-600">
+        <thead class="border-b border-stone-200 bg-stone-50 text-xs uppercase text-stone-700">
+          <tr>
+            <th scope="col" class="px-6 py-4 font-semibold">Nombre de Usuario</th>
+            <th scope="col" class="px-6 py-4 font-semibold">Nombre y Apellido</th>
+            <th scope="col" class="px-6 py-4 font-semibold">Correo Electrónico</th>
+            <th scope="col" class="px-6 py-4 font-semibold">Estado</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-stone-200">
+          {% for u in usuarios %}
+            <tr class="hover:bg-stone-50 transition">
+              <td class="px-6 py-4 font-medium text-stone-900">{{ u.username }}</td>
+              <td class="px-6 py-4">{{ u.first_name }} {{ u.last_name }}</td>
+              <td class="px-6 py-4">{{ u.email }}</td>
+              <td class="px-6 py-4">
+                {% if u.is_active %}
+                  <span class="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Activo</span>
+                {% else %}
+                  <span class="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">Inactivo</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="4" class="px-6 py-8 text-center text-stone-500">No hay usuarios registrados.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,30 +1,37 @@
-# backend/servicios/urls_bryan.py
-from django.urls import path
+"""Rutas de las pantallas de Cristian.
+
+Los nombres de las rutas (`name=`) son un acuerdo del equipo: las plantillas
+enlazan a pantallas de Daniel y Bryan usando estos mismos nombres, y esos
+enlaces aparecen solos cuando ellos agreguen sus rutas. Ver el README.
+"""
+
 from django.contrib.auth import views as auth_views
-from . import views_bryan
-from . import forms_bryan
+from django.urls import path
+
+from . import views
+from .urls_bryan import urlpatterns as urls_bryan
 
 urlpatterns = [
-    # --- PANTALLAS DE CLIENTE ---
-    path('ordenes/<str:folio>/aprobar/', views_bryan.aprobar_cotizacion, name='aprobar_cotizacion'),
-    
-    # --- FLUJO DE RECUPERAR CONTRASEÑA ---
-    # 1. Ingresar correo
-    path('recuperar-password/', views_bryan.CustomPasswordResetView.as_view(), name='password_reset'),
-    
-    # 2. Mensaje de "Correo enviado"
-    path('recuperar-password/enviado/', auth_views.PasswordResetDoneView.as_view(
-        template_name='auth/password_reset_done.html'
-    ), name='password_reset_done'),
-    
-    # 3. Pantalla del token para escribir nueva contraseña
-    path('recuperar-password/confirmar/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
-        template_name='auth/password_reset_confirm.html',
-        form_class=forms_bryan.NuevaPasswordForm
-    ), name='password_reset_confirm'),
-    
-    # 4. Mensaje de éxito
-    path('recuperar-password/completo/', auth_views.PasswordResetCompleteView.as_view(
-        template_name='auth/password_reset_complete.html'
-    ), name='password_reset_complete'),
+    # Autenticación
+    path("entrar/", views.LoginConBloqueo.as_view(), name="login"),
+    path("salir/", auth_views.LogoutView.as_view(), name="logout"),
+    path("", views.inicio, name="inicio"),
+
+    # Recepción
+    path("recepcion/nueva-orden/", views.nueva_orden, name="nueva_orden"),
+    path("recepcion/equipos/nuevo/", views.equipo_form, name="equipo_nuevo"),
+    path("recepcion/equipos/<int:pk>/", views.equipo_form, name="equipo_editar"),
+    path("recepcion/ticket/<str:folio>/", views.ticket, name="ticket"),
+
+    # Técnico
+    path("tecnico/", views.tecnico_panel, name="tecnico_panel"),
+
+    # Cliente
+    path("mis-ordenes/", views.mis_ordenes, name="mis_ordenes"),
+    path("mis-ordenes/<str:folio>/", views.cliente_orden, name="cliente_orden"),
+
+    # Administración
+    path("administracion/auditoria/", views.admin_auditoria, name="admin_auditoria"),
 ]
+
+urlpatterns += urls_bryan

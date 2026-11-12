@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.core import mail
 from django.contrib.auth.models import User, Group
 from .tests import BaseTecnoFix
-from .models import Estado, Cliente, Cotizacion, Calificacion
+from .models import Estado, Cliente, Cotizacion, Calificacion, Servicio
 
 
 class AprobarCotizacionTests(BaseTecnoFix):
@@ -122,7 +122,6 @@ class EntregaCobroTests(BaseTecnoFix):
         self.client.login(username='ana', password='prueba1234')
         response = self.client.get(self.url)
         self.assertRedirects(response, reverse('clientes'))
-        # Assert devuelto:
         self.orden.refresh_from_db()
         self.assertEqual(self.orden.estado, Estado.ARREGLANDO)
 
@@ -165,7 +164,6 @@ class CalificarServicioTests(BaseTecnoFix):
         response = self.client.post(self.url, {'calificacion': 5, 'comentario': 'Excelente servicio'})
         calificacion = Calificacion.objects.get(orden=self.orden)
         self.assertEqual(calificacion.puntuacion, 5)
-        # Assert devuelto:
         self.assertEqual(calificacion.comentario, 'Excelente servicio')
         self.assertRedirects(response, reverse('cliente_orden', kwargs={'folio': self.orden.folio}))
 
@@ -175,7 +173,6 @@ class CalificarServicioTests(BaseTecnoFix):
         response = self.client.post(self.url, {'calificacion': 5, 'comentario': 'otra vez'})
         self.assertRedirects(response, reverse('cliente_orden', kwargs={'folio': self.orden.folio}))
         self.assertEqual(Calificacion.objects.filter(orden=self.orden).count(), 1)
-        # Assert devuelto:
         self.assertEqual(Calificacion.objects.get(orden=self.orden).puntuacion, 4)
 
 
@@ -183,7 +180,6 @@ class AdminUsuariosTests(BaseTecnoFix):
     def setUp(self):
         super().setUp()
         self.url = reverse('admin_usuarios')
-        # Creamos un administrador para la prueba exitosa
         self.admin_user = User.objects.create_user(username='jefe', password='prueba1234')
         grupo_admin, created = Group.objects.get_or_create(name="Administrador")
         self.admin_user.groups.add(grupo_admin)
@@ -204,8 +200,6 @@ class AdminUsuariosTests(BaseTecnoFix):
         self.client.login(username='maria', password='prueba1234')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 403)
-
-    # --- NUEVOS TESTS DE GESTIÓN DE USUARIOS ---
     
     def test_admin_ve_el_rol_de_cada_usuario(self):
         self.client.login(username='jefe', password='prueba1234')
@@ -214,13 +208,9 @@ class AdminUsuariosTests(BaseTecnoFix):
 
     def test_admin_puede_desactivar_y_activar_a_otro_usuario(self):
         self.client.login(username='jefe', password='prueba1234')
-        
-        # Desactiva
         self.client.post(self.url, {'usuario_id': self.ana.pk})
         self.ana.refresh_from_db()
         self.assertFalse(self.ana.is_active)
-        
-        # Activa
         self.client.post(self.url, {'usuario_id': self.ana.pk})
         self.ana.refresh_from_db()
         self.assertTrue(self.ana.is_active)
@@ -237,3 +227,48 @@ class AdminUsuariosTests(BaseTecnoFix):
         self.assertEqual(response.status_code, 403)
         self.luis.refresh_from_db()
         self.assertTrue(self.luis.is_active)
+
+
+class AdminCatalogoTests(BaseTecnoFix):
+    def setUp(self):
+        super().setUp()
+        self.url = reverse('admin_catalogo')
+        self.admin_user = User.objects.create_user(username='jefe2', password='prueba1234')
+        grupo_admin, created = Group.objects.get_or_create(name="Administrador")
+        self.admin_user.groups.add(grupo_admin)
+        
+        self.servicio = Servicio.objects.create(
+            nombre="Formateo Básico", precio_refaccion=0, precio_mano_obra=400, activo=True
+        )
+
+    def test_admin_puede_ver_catalogo(self):
+        self.client.login(username='jefe2', password='prueba1234')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'administracion/admin_catalogo.html')
+        self.assertIn('servicios', response.context)
+
+    def test_admin_puede_desactivar_y_activar_servicio(self):
+        self.client.login(username='jefe2', password='prueba1234')
+        
+        self.client.post(self.url, {'servicio_id': self.servicio.pk})
+        self.servicio.refresh_from_db()
+        self.assertFalse(self.servicio.activo)
+        
+        self.client.post(self.url, {'servicio_id': self.servicio.pk})
+        self.servicio.refresh_from_db()
+        self.assertTrue(self.servicio.activo)
+
+    def test_recepcion_no_tiene_acceso_y_no_cambia_servicios(self):
+        self.client.login(username='ana', password='prueba1234')
+        response = self.client.post(self.url, {'servicio_id': self.servicio.pk})
+        self.assertEqual(response.status_code, 403)
+        self.servicio.refresh_from_db()
+        self.assertTrue(self.servicio.activo)
+
+    def test_cliente_no_tiene_acceso_y_no_cambia_servicios(self):
+        self.client.login(username='maria', password='prueba1234')
+        response = self.client.post(self.url, {'servicio_id': self.servicio.pk})
+        self.assertEqual(response.status_code, 403)
+        self.servicio.refresh_from_db()
+        self.assertTrue(self.servicio.activo)

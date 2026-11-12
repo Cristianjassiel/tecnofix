@@ -14,6 +14,7 @@ urlpatterns = [
     
     # --- PANTALLAS DE ADMINISTRACIÓN ---
     path('administracion/usuarios/', views_bryan.admin_usuarios, name='admin_usuarios'),
+    path('administracion/catalogo/', views_bryan.admin_catalogo, name='admin_catalogo'),
     
     # --- FLUJO DE RECUPERAR CONTRASEÑA ---
     path('recuperar-password/', views_bryan.CustomPasswordResetView.as_view(), name='password_reset'),

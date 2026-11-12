@@ -6,7 +6,7 @@ from django.contrib.auth.views import PasswordResetView
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 
-from .models import OrdenServicio, Estado, TransicionInvalida, Cliente, Calificacion
+from .models import OrdenServicio, Estado, TransicionInvalida, Cliente, Calificacion, Servicio
 from .permisos import solo_cliente, solo_recepcion, solo_admin
 from .forms_bryan import RecuperarPasswordForm, EntregaCobroForm
 
@@ -40,18 +40,15 @@ def aprobar_cotizacion(request, folio):
             messages.error(request, str(error))
     return render(request, 'cliente/aprobar_cotizacion.html', {'orden': orden})
 
-
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'auth/password_reset.html'
     form_class = RecuperarPasswordForm
     success_url = reverse_lazy('password_reset_done')
 
-
 @solo_recepcion
 def lista_clientes(request):
     clientes = Cliente.objects.all().order_by('nombre_completo')
     return render(request, 'recepcion/lista_clientes.html', {'clientes': clientes})
-
 
 @solo_recepcion
 def entrega_cobro(request, folio):
@@ -72,7 +69,6 @@ def entrega_cobro(request, folio):
     else:
         form = EntregaCobroForm()
     return render(request, 'recepcion/entrega_cobro.html', {'orden': orden, 'form': form})
-
 
 @solo_cliente
 def calificar_servicio(request, folio):
@@ -99,7 +95,6 @@ def calificar_servicio(request, folio):
         form = CalificarServicioForm()
     return render(request, 'cliente/calificar.html', {'orden': orden, 'form': form})
 
-
 @solo_admin
 def admin_usuarios(request):
     if request.method == 'POST':
@@ -112,6 +107,19 @@ def admin_usuarios(request):
             estado = 'activado' if usuario.is_active else 'desactivado'
             messages.success(request, f'Usuario {usuario.username} {estado}.')
         return redirect('admin_usuarios')
-
     usuarios = User.objects.prefetch_related('groups').order_by('username')
     return render(request, 'administracion/admin_usuarios.html', {'usuarios': usuarios})
+
+@solo_admin
+def admin_catalogo(request):
+    """Pantalla para consultar y gestionar el catálogo de servicios y refacciones."""
+    if request.method == 'POST':
+        servicio = get_object_or_404(Servicio, pk=request.POST.get('servicio_id'))
+        servicio.activo = not servicio.activo
+        servicio.save(update_fields=['activo'])
+        estado_txt = 'activado' if servicio.activo else 'desactivado'
+        messages.success(request, f'Servicio {servicio.nombre} {estado_txt}.')
+        return redirect('admin_catalogo')
+        
+    servicios = Servicio.objects.all().order_by('nombre')
+    return render(request, 'administracion/admin_catalogo.html', {'servicios': servicios})

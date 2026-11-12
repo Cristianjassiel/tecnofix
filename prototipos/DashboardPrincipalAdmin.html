@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Administrador - TecnoFix Dolores</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-stone-100 min-h-screen">
+
+    <!-- Navegación superior -->
+    <nav class="bg-white border-b border-stone-200 px-4 py-3 md:px-8 flex justify-between items-center shadow-sm">
+        <div class="flex items-center gap-8">
+            <h1 class="text-xl font-bold text-stone-800">TecnoFix Dolores</h1>
+
+            <!-- Enlaces de navegación -->
+            <div class="hidden md:flex gap-6">
+                <!-- Link activo -->
+                <a href="#" class="font-medium text-indigo-700">Dashboard</a>
+                <!-- Links normales -->
+                <a href="#" class="text-sm text-stone-500 hover:text-indigo-600 transition">Órdenes</a>
+                <a href="#" class="text-sm text-stone-500 hover:text-indigo-600 transition">Clientes</a>
+                <a href="#" class="text-sm text-stone-500 hover:text-indigo-600 transition">Equipos</a>
+                <a href="#" class="text-sm text-stone-500 hover:text-indigo-600 transition">Reportes</a>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <div class="text-right hidden md:block">
+                <p class="text-sm font-medium text-stone-800">Roberto Salinas</p>
+                <p class="text-xs text-stone-500">Administrador</p>
+            </div>
+            <!-- Botón secundario para salir -->
+            <a href="#" class="text-sm font-medium text-stone-500 hover:text-stone-800 transition">Salir</a>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="mx-auto max-w-7xl p-4 md:p-8 mt-4">
+
+        <div class="mb-8 flex items-center justify-between">
+            <div>
+                <h2 class="text-2xl font-bold text-stone-800">Resumen General</h2>
+                <p class="text-sm text-stone-500 mt-1">Monitorea el estado actual del taller y las reparaciones activas.</p>
+            </div>
+            <!-- Botón primario de acción rápida -->
+            <button class="rounded-lg bg-indigo-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                Nueva Orden
+            </button>
+        </div>
+
+        <!-- Tarjetas de indicadores (KPIs) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+                <h3 class="text-sm font-medium text-stone-500">Órdenes en curso</h3>
+                <p class="text-3xl font-bold text-stone-800 mt-2">12</p>
+            </section>
+
+            <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+                <h3 class="text-sm font-medium text-stone-500">Equipos para entregar</h3>
+                <p class="text-3xl font-bold text-stone-800 mt-2">5</p>
+            </section>
+
+            <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+                <h3 class="text-sm font-medium text-stone-500">Garantías activas (Mes)</h3>
+                <p class="text-3xl font-bold text-stone-800 mt-2">2</p>
+            </section>
+        </div>
+
+        <!-- Tabla de Órdenes Recientes -->
+        <section class="rounded-xl border border-stone-200 bg-white shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-stone-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-stone-800">Órdenes recientes</h3>
+                <a href="#" class="text-sm text-indigo-700 hover:text-indigo-600 font-medium transition">Ver todas</a>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-stone-50 text-stone-500 border-b border-stone-200">
+                        <tr>
+                            <th class="px-6 py-4 font-medium">Folio</th>
+                            <th class="px-6 py-4 font-medium">Cliente</th>
+                            <th class="px-6 py-4 font-medium">Equipo</th>
+                            <th class="px-6 py-4 font-medium">Estado</th>
+                            <th class="px-6 py-4 font-medium">Técnico</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-stone-200 text-stone-800">
+                        <!-- Fila 1: En diagnóstico -->
+                        <tr class="hover:bg-stone-50 transition">
+                            <td class="px-6 py-4 font-medium">#ORD-0102</td>
+                            <td class="px-6 py-4">Carlos Gómez</td>
+                            <td class="px-6 py-4 text-stone-500">Samsung Galaxy S22</td>
+                            <td class="px-6 py-4">
+                                <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">En diagnóstico</span>
+                            </td>
+                            <td class="px-6 py-4">Luis Torres</td>
+                        </tr>
+
+                        <!-- Fila 2: Arreglando -->
+                        <tr class="hover:bg-stone-50 transition">
+                            <td class="px-6 py-4 font-medium">#ORD-0101</td>
+                            <td class="px-6 py-4">Mariana López</td>
+                            <td class="px-6 py-4 text-stone-500">Laptop Dell Inspiron</td>
+                            <td class="px-6 py-4">
+                                <span class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-800">Arreglando</span>
+                            </td>
+                            <td class="px-6 py-4">Jorge Ramírez</td>
+                        </tr>
+
+                        <!-- Fila 3: Recibido -->
+                        <tr class="hover:bg-stone-50 transition">
+                            <td class="px-6 py-4 font-medium">#ORD-0103</td>
+                            <td class="px-6 py-4">Fernando Ruiz</td>
+                            <td class="px-6 py-4 text-stone-500">iPhone 13 Pro</td>
+                            <td class="px-6 py-4">
+                                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">Recibido</span>
+                            </td>
+                            <td class="px-6 py-4">Luis Torres</td>
+                        </tr>
+
+                        <!-- Fila 4: Terminado -->
+                        <tr class="hover:bg-stone-50 transition">
+                            <td class="px-6 py-4 font-medium">#ORD-0099</td>
+                            <td class="px-6 py-4">Sofía Castro</td>
+                            <td class="px-6 py-4 text-stone-500">iPad Air 4</td>
+                            <td class="px-6 py-4">
+                                <span class="rounded-full bg-teal-100 px-3 py-1 text-xs font-medium text-teal-800">Terminado</span>
+                            </td>
+                            <td class="px-6 py-4">Jorge Ramírez</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</body>
+</html>

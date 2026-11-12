@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block titulo %}Dashboard administrador{% endblock %}
+{% block contenido %}
+<div class="flex justify-between gap-4">
+<div>
+<h1 class="text-2xl font-bold">Resumen General</h1>
+<p class="text-sm text-stone-500">Monitorea el estado actual del taller.</p>
+</div>
+<a class="rounded-lg bg-indigo-600 px-5 py-2 text-white" href="{% url 'nueva_orden' %}">Nueva Orden</a>
+</div>
+<div class="grid md:grid-cols-3 gap-6">
+<section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+<h2 class="text-stone-500">Órdenes en curso</h2>
+<p class="text-3xl font-bold mt-2">{{ en_curso }}</p>
+</section>
+<section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+<h2 class="text-stone-500">Equipos para entregar</h2>
+<p class="text-3xl font-bold mt-2">{{ por_entregar }}</p>
+</section>
+<section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+<h2 class="text-stone-500">Garantías activas</h2>
+<p class="text-3xl font-bold mt-2">{{ garantias }}</p>
+</section>
+</div>
+<section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+<div class="flex justify-between mb-4">
+<h2 class="text-lg font-semibold">Órdenes recientes</h2>
+<a class="text-indigo-700" href="{% url 'buscar_ordenes' %}">Ver todas</a>
+</div>{% include 'compartidos/ordenes.html' %}</section>
+{% endblock %}

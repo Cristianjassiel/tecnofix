@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda Avanzada - TecnoFix Dolores</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-stone-100 min-h-screen">
+
+    <!-- Navegación superior -->
+    <nav class="bg-white border-b border-stone-200 px-4 py-3 md:px-8 flex justify-between items-center shadow-sm">
+        <div class="flex items-center gap-8">
+            <h1 class="text-xl font-bold text-stone-800">TecnoFix Dolores</h1>
+
+            <div class="hidden md:flex gap-6">
+                <a href="#" class="text-sm text-stone-500 hover:text-indigo-600 transition">Dashboard</a>
+                <!-- Link activo -->
+                <a href="#" class="text-sm font-medium text-indigo-700">Órdenes</a>
+                <a href="#" class="text-sm text-stone-500 hover:text-indigo-600 transition">Clientes</a>
+                <a href="#" class="text-sm text-stone-500 hover:text-indigo-600 transition">Equipos</a>
+                <a href="#" class="text-sm text-stone-500 hover:text-indigo-600 transition">Reportes</a>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <div class="text-right hidden md:block">
+                <p class="text-sm font-medium text-stone-800">Ana Martínez</p>
+                <p class="text-xs text-stone-500">Recepcionista</p>
+            </div>
+            <a href="#" class="text-sm font-medium text-stone-500 hover:text-stone-800 transition">Salir</a>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="mx-auto max-w-7xl p-4 md:p-8 mt-4">
+
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-stone-800">Búsqueda avanzada de órdenes</h2>
+            <p class="text-sm text-stone-500 mt-1">Utiliza los filtros para localizar órdenes de servicio registradas en el sistema.</p>
+        </div>
+
+        <!-- Tarjeta de Filtros -->
+        <section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm mb-8">
+            <form action="#" method="GET" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <div>
+                    <label for="folio" class="block text-sm font-medium text-stone-800">Folio de la orden</label>
+                    <input type="text" id="folio" placeholder="Ej. #ORD-0102"
+                        class="mt-1 w-full rounded-lg border border-stone-300 p-2 focus:border-indigo-500 focus:outline-none text-stone-800">
+                </div>
+
+                <div>
+                    <label for="cliente" class="block text-sm font-medium text-stone-800">Nombre del cliente</label>
+                    <input type="text" id="cliente" placeholder="Buscar por cliente..."
+                        class="mt-1 w-full rounded-lg border border-stone-300 p-2 focus:border-indigo-500 focus:outline-none text-stone-800">
+                </div>
+
+                <div>
+                    <label for="serie" class="block text-sm font-medium text-stone-800">Número de Serie / IMEI</label>
+                    <input type="text" id="serie" placeholder="IMEI o serie del equipo"
+                        class="mt-1 w-full rounded-lg border border-stone-300 p-2 focus:border-indigo-500 focus:outline-none text-stone-800">
+                </div>
+
+                <div>
+                    <label for="estado" class="block text-sm font-medium text-stone-800">Estado</label>
+                    <select id="estado" class="mt-1 w-full rounded-lg border border-stone-300 p-2 focus:border-indigo-500 focus:outline-none text-stone-800 bg-white">
+                        <option value="">Todos los estados</option>
+                        <option value="recibido">Recibido</option>
+                        <option value="en-diagnostico">En diagnóstico</option>
+                        <option value="en-revision">En revisión</option>
+                        <option value="rechazado">Rechazado</option>
+                        <option value="arreglando">Arreglando</option>
+                        <option value="terminado">Terminado</option>
+                        <option value="entregado">Entregado</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="fecha_inicio" class="block text-sm font-medium text-stone-800">Fecha desde</label>
+                    <input type="date" id="fecha_inicio"
+                        class="mt-1 w-full rounded-lg border border-stone-300 p-2 focus:border-indigo-500 focus:outline-none text-stone-800">
+                </div>
+
+                <div>
+                    <label for="fecha_fin" class="block text-sm font-medium text-stone-800">Fecha hasta</label>
+                    <input type="date" id="fecha_fin"
+                        class="mt-1 w-full rounded-lg border border-stone-300 p-2 focus:border-indigo-500 focus:outline-none text-stone-800">
+                </div>
+
+                <div class="md:col-span-3 flex justify-end gap-4 border-t border-stone-200 pt-4 mt-2">
+                    <button type="reset" class="px-5 py-2 text-sm font-medium text-stone-500 hover:text-stone-800 transition">
+                        Limpiar filtros
+                    </button>
+                    <!-- Botón primario -->
+                    <button type="submit"
+                        class="rounded-lg bg-indigo-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                        Buscar órdenes
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Resultados de búsqueda -->
+        <section class="rounded-xl border border-stone-200 bg-white shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-stone-200 bg-stone-50">
+                <p class="text-sm text-stone-500 font-medium">Se encontraron 4 resultados</p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-white text-stone-500 border-b border-stone-200">
+                        <tr>
+                            <th class="px-6 py-4 font-medium">Folio / Fecha</th>
+                            <th class="px-6 py-4 font-medium">Cliente</th>
+                            <th class="px-6 py-4 font-medium">Equipo</th>
+                            <th class="px-6 py-4 font-medium">Estado</th>
+                            <th class="px-6 py-4 font-medium text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-stone-200 text-stone-800">
+
+                        <!-- Resultado 1 -->
+                        <tr class="hover:bg-stone-50 transition">
+                            <td class="px-6 py-4">
+                                <div class="font-medium text-stone-800">#ORD-0105</div>
+                                <div class="text-xs text-stone-500 mt-1">28 Oct 2026</div>
+                            </td>
+                            <td class="px-6 py-4">Miguel Hernández</td>
+                            <td class="px-6 py-4 text-stone-500">iPhone 11</td>
+                            <td class="px-6 py-4">
+                                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">Recibido</span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <a href="#" class="text-indigo-700 hover:text-indigo-600 font-medium">Ver detalle</a>
+                            </td>
+                        </tr>
+
+                        <!-- Resultado 2 -->
+                        <tr class="hover:bg-stone-50 transition">
+                            <td class="px-6 py-4">
+                                <div class="font-medium text-stone-800">#ORD-0104</div>
+                                <div class="text-xs text-stone-500 mt-1">27 Oct 2026</div>
+                            </td>
+                            <td class="px-6 py-4">Lucía Vargas</td>
+                            <td class="px-6 py-4 text-stone-500">Laptop HP Pavilion</td>
+                            <td class="px-6 py-4">
+                                <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">En revisión</span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <a href="#" class="text-indigo-700 hover:text-indigo-600 font-medium">Ver detalle</a>
+                            </td>
+                        </tr>
+
+                        <!-- Resultado 3 -->
+                        <tr class="hover:bg-stone-50 transition">
+                            <td class="px-6 py-4">
+                                <div class="font-medium text-stone-800">#ORD-0098</div>
+                                <div class="text-xs text-stone-500 mt-1">22 Oct 2026</div>
+                            </td>
+                            <td class="px-6 py-4">Ricardo Gómez</td>
+                            <td class="px-6 py-4 text-stone-500">Samsung Galaxy S21</td>
+                            <td class="px-6 py-4">
+                                <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-800">Rechazado</span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <a href="#" class="text-indigo-700 hover:text-indigo-600 font-medium">Ver detalle</a>
+                            </td>
+                        </tr>
+
+                        <!-- Resultado 4 -->
+                        <tr class="hover:bg-stone-50 transition">
+                            <td class="px-6 py-4">
+                                <div class="font-medium text-stone-800">#ORD-0095</div>
+                                <div class="text-xs text-stone-500 mt-1">20 Oct 2026</div>
+                            </td>
+                            <td class="px-6 py-4">Elena Ruiz</td>
+                            <td class="px-6 py-4 text-stone-500">iPad Pro 11"</td>
+                            <td class="px-6 py-4">
+                                <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800">Entregado</span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <a href="#" class="text-indigo-700 hover:text-indigo-600 font-medium">Ver detalle</a>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</body>
+</html>

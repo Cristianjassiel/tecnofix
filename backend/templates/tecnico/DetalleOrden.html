@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block titulo %}Detalle de orden{% endblock %}
+{% block contenido %}
+<div class="flex justify-between">
+<div>
+<h1 class="text-2xl font-bold">Orden #{{ orden.folio }}</h1>
+<p class="text-indigo-700">{{ orden.get_estado_display }}</p>
+<p class="text-sm text-stone-500">Recibido: {{ orden.fecha_recepcion }}</p>
+</div>
+<a href="{% url 'tecnico_panel' %}" class="text-indigo-700">Volver a Mis Órdenes</a>
+</div>
+<div class="grid lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 space-y-6">
+<section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+<h2 class="text-lg font-semibold border-b pb-2 mb-4">Información del Equipo</h2>
+<dl class="grid grid-cols-2 gap-4">
+<div>
+<dt class="text-sm text-stone-500">Dispositivo</dt>
+<dd>{{ orden.equipo }} · {{ orden.equipo.color }}</dd>
+</div>
+<div>
+<dt class="text-sm text-stone-500">IMEI / Serie</dt>
+<dd>{{ orden.equipo.numero_serie }}</dd>
+</div>
+<div>
+<dt class="text-sm text-stone-500">Cliente</dt>
+<dd>{{ orden.equipo.cliente }}</dd>
+</div>
+<div>
+<dt class="text-sm text-stone-500">Teléfono</dt>
+<dd>{{ orden.equipo.cliente.telefono }}</dd>
+</div>
+</dl>
+<h3 class="mt-5 text-sm text-stone-500">Falla reportada</h3>
+<p class="bg-stone-50 border rounded-lg p-3">{{ orden.falla_reportada }}</p>
+<h3 class="mt-5 text-sm text-stone-500">Accesorios recibidos</h3>
+<p>{% for accesorio in orden.accesorios.all %}{{ accesorio.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}Sin accesorios de catálogo{% endfor %} {{ orden.otros_accesorios }}</p>
+</section>
+<section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+<h2 class="font-semibold mb-4">Evidencia fotográfica</h2>
+<div class="grid grid-cols-2 gap-4">{% for foto in orden.evidencias.all %}<figure>
+<img class="rounded-lg w-full" src="{% url 'evidencia' foto.pk %}" alt="{{ foto.get_momento_display }}" loading="lazy">
+<figcaption>{{ foto.get_momento_display }}</figcaption>
+</figure>{% empty %}<p>No hay fotos registradas.</p>{% endfor %}</div>
+</section>{% if orden.cotizacion %}<section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+<h2 class="font-semibold">Cotización</h2>
+<p>Total: ${{ orden.cotizacion.total|floatformat:2 }} MXN</p>
+<p>Respuesta: {{ orden.cotizacion.aprobada|yesno:'Aprobada,Rechazada,Pendiente' }}</p>
+</section>{% endif %}</div>
+<aside class="space-y-6">
+<section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+<h2 class="font-semibold mb-4">Actualizar Orden</h2>{% if editable %}<form method="post" class="space-y-4">{% csrf_token %}{% include 'compartidos/campos.html' %}<button class="rounded-lg bg-indigo-600 px-5 py-2 text-sm font-medium text-white hover:bg-indigo-700" type="submit">Guardar</button>
+</form>{% else %}<p>Sin cambios técnicos disponibles en este estado.</p>
+<p>{{ orden.diagnostico_tecnico }}</p>
+<p>{{ orden.notas_reparacion }}</p>{% endif %}{% if orden.estado == 'diagnostico' %}<a class="block mt-4 text-indigo-700" href="{% url 'generar_cotizacion' orden.folio %}">Generar cotización</a>{% endif %}</section>
+<section class="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+<h2 class="font-semibold mb-4">Bitácora de la Orden</h2>
+<ul class="space-y-4">{% for evento in orden.historial.all %}<li>
+<p>{{ evento.get_estado_nuevo_display }}</p>
+<p class="text-sm">{{ evento.comentario }}</p>
+<p class="text-xs text-stone-500">{{ evento.fecha }} · {{ evento.usuario }}</p>
+</li>{% empty %}<li>Sin movimientos.</li>{% endfor %}</ul>
+</section>
+</aside>
+</div>
+{% endblock %}

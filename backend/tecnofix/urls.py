@@ -9,7 +9,3 @@ urlpatterns = [
     path("django-admin/", admin.site.urls),
     path("", include("servicios.urls")),
 ]
-
-# En desarrollo, Django sirve las fotos de evidencia. En producción lo hace Nginx.
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

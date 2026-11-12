@@ -226,7 +226,7 @@ class PermisosDeVistasTests(BaseTecnoFix):
             ("ana", reverse("nueva_orden")),
             ("luis", reverse("tecnico_panel")),
             ("maria", reverse("mis_ordenes")),
-            ("roberto", reverse("admin_auditoria")),
+            ("roberto", reverse("admin_dashboard")),
         ]
         for username, destino in casos:
             with self.subTest(usuario=username):

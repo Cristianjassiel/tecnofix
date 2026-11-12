@@ -112,6 +112,14 @@ def admin_usuarios(request):
 
 @solo_admin
 def admin_catalogo(request):
-    """Pantalla para consultar el catálogo de servicios y refacciones."""
+    """Pantalla para consultar y gestionar el catálogo de servicios y refacciones."""
+    if request.method == 'POST':
+        servicio = get_object_or_404(Servicio, pk=request.POST.get('servicio_id'))
+        servicio.activo = not servicio.activo
+        servicio.save(update_fields=['activo'])
+        estado_txt = 'activado' if servicio.activo else 'desactivado'
+        messages.success(request, f'Servicio {servicio.nombre} {estado_txt}.')
+        return redirect('admin_catalogo')
+        
     servicios = Servicio.objects.all().order_by('nombre')
     return render(request, 'administracion/admin_catalogo.html', {'servicios': servicios})

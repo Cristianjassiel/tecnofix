@@ -21,6 +21,7 @@
             <th scope="col" class="px-6 py-4 font-semibold">Precio de Refacción</th>
             <th scope="col" class="px-6 py-4 font-semibold">Precio Mano de Obra</th>
             <th scope="col" class="px-6 py-4 font-semibold">Estado</th>
+            <th scope="col" class="px-6 py-4 font-semibold">Acción</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-stone-200">
@@ -38,10 +39,20 @@
                   <span class="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">Inactivo</span>
                 {% endif %}
               </td>
+
+              <td class="px-6 py-4">
+                <form method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="servicio_id" value="{{ s.pk }}">
+                  <button type="submit" class="rounded-lg border border-stone-300 px-3 py-1 text-xs font-medium text-stone-700 hover:bg-stone-100">
+                    {% if s.activo %}Desactivar{% else %}Activar{% endif %}
+                  </button>
+                </form>
+              </td>
             </tr>
           {% empty %}
             <tr>
-              <td colspan="5" class="px-6 py-8 text-center text-stone-500">El catálogo está vacío.</td>
+              <td colspan="6" class="px-6 py-8 text-center text-stone-500">El catálogo está vacío.</td>
             </tr>
           {% endfor %}
         </tbody>

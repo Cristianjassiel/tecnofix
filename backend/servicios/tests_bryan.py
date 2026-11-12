@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.core import mail
 from django.contrib.auth.models import User, Group
 from .tests import BaseTecnoFix
-from .models import Estado, Cliente, Cotizacion, Calificacion
+from .models import Estado, Cliente, Cotizacion, Calificacion, Servicio
 
 
 class AprobarCotizacionTests(BaseTecnoFix):
@@ -236,6 +236,10 @@ class AdminCatalogoTests(BaseTecnoFix):
         self.admin_user = User.objects.create_user(username='jefe2', password='prueba1234')
         grupo_admin, created = Group.objects.get_or_create(name="Administrador")
         self.admin_user.groups.add(grupo_admin)
+        
+        self.servicio = Servicio.objects.create(
+            nombre="Formateo Básico", precio_refaccion=0, precio_mano_obra=400, activo=True
+        )
 
     def test_admin_puede_ver_catalogo(self):
         self.client.login(username='jefe2', password='prueba1234')
@@ -244,12 +248,27 @@ class AdminCatalogoTests(BaseTecnoFix):
         self.assertTemplateUsed(response, 'administracion/admin_catalogo.html')
         self.assertIn('servicios', response.context)
 
-    def test_recepcion_no_tiene_acceso(self):
-        self.client.login(username='ana', password='prueba1234')
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 403)
+    def test_admin_puede_desactivar_y_activar_servicio(self):
+        self.client.login(username='jefe2', password='prueba1234')
+        
+        self.client.post(self.url, {'servicio_id': self.servicio.pk})
+        self.servicio.refresh_from_db()
+        self.assertFalse(self.servicio.activo)
+        
+        self.client.post(self.url, {'servicio_id': self.servicio.pk})
+        self.servicio.refresh_from_db()
+        self.assertTrue(self.servicio.activo)
 
-    def test_cliente_no_tiene_acceso(self):
-        self.client.login(username='maria', password='prueba1234')
-        response = self.client.get(self.url)
+    def test_recepcion_no_tiene_acceso_y_no_cambia_servicios(self):
+        self.client.login(username='ana', password='prueba1234')
+        response = self.client.post(self.url, {'servicio_id': self.servicio.pk})
         self.assertEqual(response.status_code, 403)
+        self.servicio.refresh_from_db()
+        self.assertTrue(self.servicio.activo)
+
+    def test_cliente_no_tiene_acceso_y_no_cambia_servicios(self):
+        self.client.login(username='maria', password='prueba1234')
+        response = self.client.post(self.url, {'servicio_id': self.servicio.pk})
+        self.assertEqual(response.status_code, 403)
+        self.servicio.refresh_from_db()
+        self.assertTrue(self.servicio.activo)

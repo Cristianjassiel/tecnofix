@@ -80,3 +80,34 @@ def entrega_cobro(request, folio):
         form = EntregaCobroForm()
             
     return render(request, 'recepcion/entrega_cobro.html', {'orden': orden, 'form': form})
+
+
+@solo_cliente
+def calificar_servicio(request, folio):
+    """Permite al cliente calificar un servicio que ya fue entregado."""
+    # Filtramos para asegurar que la orden le pertenece al usuario logueado
+    orden = get_object_or_404(OrdenServicio, folio=folio, equipo__cliente__usuario=request.user)
+    
+    # Solo se puede calificar si el equipo ya fue entregado
+    if orden.estado != Estado.ENTREGADO:
+        messages.error(request, "Solo puedes calificar servicios que ya te han sido entregados.")
+        return redirect('cliente_orden', folio=orden.folio)
+        
+    if request.method == 'POST':
+        # Importamos el formulario localmente para no saturar los imports de arriba
+        from .forms_bryan import CalificarServicioForm
+        form = CalificarServicioForm(request.POST)
+        
+        if form.is_valid():
+            # Asumimos que el modelo OrdenServicio tiene campos de calificación
+            orden.calificacion = form.cleaned_data['calificacion']
+            orden.comentario_cliente = form.cleaned_data['comentario']
+            orden.save()
+            
+            messages.success(request, "¡Gracias por tus comentarios! Tu calificación ha sido guardada.")
+            return redirect('cliente_orden', folio=orden.folio)
+    else:
+        from .forms_bryan import CalificarServicioForm
+        form = CalificarServicioForm()
+            
+    return render(request, 'cliente/calificar.html', {'orden': orden, 'form': form})

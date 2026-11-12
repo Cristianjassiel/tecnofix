@@ -22,3 +22,16 @@ class EntregaCobroForm(EstiloTailwindMixin, forms.Form):
         label="Método de Pago",
         widget=forms.Select(attrs={'class': 'w-full rounded border-stone-300'})
     )
+    
+    
+class CalificarServicioForm(EstiloTailwindMixin, forms.Form):
+    calificacion = forms.IntegerField(
+        min_value=1, max_value=5,
+        label="Calificación (1 a 5 estrellas)",
+        widget=forms.NumberInput(attrs={'class': 'w-full rounded border-stone-300', 'placeholder': '5'})
+    )
+    comentario = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'w-full rounded border-stone-300', 'rows': 3, 'placeholder': '¿Cómo te pareció el servicio?'}),
+        required=False,
+        label="Comentarios (opcional)"
+    )

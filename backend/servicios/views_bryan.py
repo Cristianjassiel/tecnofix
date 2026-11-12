@@ -1,4 +1,9 @@
 # backend/servicios/views_bryan.py
+from .models import OrdenServicio, Estado, TransicionInvalida, Cliente
+from .permisos import solo_cliente, solo_tecnico
+
+from .permisos import solo_cliente, solo_recepcion
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.utils import timezone
@@ -57,3 +62,12 @@ class CustomPasswordResetView(PasswordResetView):
     template_name = 'auth/password_reset.html'
     form_class = RecuperarPasswordForm
     success_url = reverse_lazy('password_reset_done')
+    
+
+
+@solo_recepcion
+def lista_clientes(request):
+    """Muestra un directorio de todos los clientes registrados a recepción."""
+    clientes = Cliente.objects.all().order_by('nombre_completo')
+    # Actualiza la ruta del render
+    return render(request, 'recepcion/lista_clientes.html', {'clientes': clientes})

@@ -7,10 +7,11 @@ urlpatterns = [
     # --- PANTALLA DE CLIENTE ---
     path('ordenes/<str:folio>/aprobar/', views_bryan.aprobar_cotizacion, name='aprobar_cotizacion'),
     
-    # --- PANTALLA DE RECEPCIÓN (CORREGIDA) ---
+    # --- PANTALLAS DE RECEPCIÓN ---
     path('recepcion/clientes/', views_bryan.lista_clientes, name='clientes'),
+    path('recepcion/entrega-cobro/<str:folio>/', views_bryan.entrega_cobro, name='entrega_cobro'),
     
-    # --- FLUJO DE RECUPERAR CONTRASEÑA (RESTAURADO) ---
+    # --- FLUJO DE RECUPERAR CONTRASEÑA ---
     path('recuperar-password/', views_bryan.CustomPasswordResetView.as_view(), name='password_reset'),
     
     path('recuperar-password/enviado/', auth_views.PasswordResetDoneView.as_view(

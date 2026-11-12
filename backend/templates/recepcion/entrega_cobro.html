@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block titulo %}Entrega y Cobro — TecnoFix Dolores{% endblock %}
+
+{% block contenido %}
+<div class="mx-auto max-w-3xl px-5 py-12">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-stone-800">Entrega de Equipo y Cobro</h1>
+    <p class="mt-1 text-sm text-stone-500">Folio de la orden: <span class="font-semibold text-indigo-600">{{ orden.folio }}</span></p>
+  </div>
+
+  <section class="overflow-hidden rounded-xl border border-stone-200 bg-white shadow-sm">
+    <div class="p-6 border-b border-stone-200">
+      <h2 class="text-lg font-semibold text-stone-800 mb-4">Detalles del Servicio</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <div>
+          <span class="block text-stone-500">Cliente:</span>
+          <span class="font-medium text-stone-900">{{ orden.equipo.cliente.nombre_completo }}</span>
+        </div>
+        <div>
+          <span class="block text-stone-500">Equipo:</span>
+          <span class="font-medium text-stone-900">{{ orden.equipo.marca }} {{ orden.equipo.modelo }}</span>
+        </div>
+        <div>
+          <span class="block text-stone-500">Falla reportada:</span>
+          <span class="font-medium text-stone-900">{{ orden.falla_reportada }}</span>
+        </div>
+        <div>
+          <span class="block text-stone-500">Costo Total:</span>
+          <span class="font-bold text-green-600 text-lg">
+            ${% if orden.costo_final %}{{ orden.costo_final|floatformat:"2g" }}{% else %}{{ orden.cotizacion.total|floatformat:"2g" }}{% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <form method="POST" class="p-6 bg-stone-50">
+      {% csrf_token %}
+      
+      <div class="mb-5">
+        <label for="{{ form.metodo_pago.id_for_label }}" class="block text-sm font-medium text-stone-800 mb-2">{{ form.metodo_pago.label }}</label>
+        {{ form.metodo_pago }}
+      </div>
+
+      <div class="mb-6">
+        <p class="text-sm text-stone-600 mb-2">Confirma que el pago ha sido recibido y el equipo entregado al cliente.</p>
+        <label class="flex items-center space-x-3">
+          <input type="checkbox" required class="h-5 w-5 rounded border-stone-300 text-indigo-600 focus:ring-indigo-500">
+          <span class="text-sm font-medium text-stone-800">El cliente pagó el total y recibió su equipo</span>
+        </label>
+      </div>
+      
+      <div class="flex justify-end gap-3">
+        <a href="{% url 'clientes' %}" class="rounded-lg border border-stone-300 bg-white px-5 py-2.5 text-sm font-medium text-stone-700 hover:bg-stone-50 focus:outline-none">Cancelar</a>
+        <button type="submit" class="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none">Registrar Entrega</button>
+      </div>
+    </form>
+  </section>
+</div>
+{% endblock %}

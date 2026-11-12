@@ -64,18 +64,14 @@ class RecuperarPasswordTests(BaseTecnoFix):
     def test_envio_de_correo_exitoso(self):
         url = reverse('password_reset')
         
-        # Asignamos un correo válido a la cuenta de prueba de 'ana'
         usuario = User.objects.get(username='ana')
         usuario.email = 'ana@tecnofix.com'
         usuario.save()
         
-        # Simulamos que Ana ingresa su correo en el formulario
         response = self.client.post(url, {'email': 'ana@tecnofix.com'})
         
-        # Verifica que avance a la pantalla de "Correo enviado"
         self.assertRedirects(response, reverse('password_reset_done'))
         
-        # Verifica que Django generó y "envió" el correo con el enlace
         self.assertEqual(len(mail.outbox), 1)
         self.assertIn('Restablecimiento', mail.outbox[0].subject)
         
@@ -94,3 +90,54 @@ class ListaClientesTests(BaseTecnoFix):
         response = self.client.get(reverse('clientes'))
         
         self.assertEqual(response.status_code, 403)
+
+
+class EntregaCobroTests(BaseTecnoFix):
+    def setUp(self):
+        super().setUp()
+        self.orden.estado = Estado.TERMINADO
+        self.orden.save()
+        
+        Cotizacion.objects.create(
+            orden=self.orden,
+            costo_refaccion=100.00,
+            costo_mano_obra=200.00,
+            aprobada=True
+        )
+        self.url = reverse('entrega_cobro', kwargs={'folio': self.orden.folio})
+
+    def test_recepcion_puede_ver_pantalla_cobro(self):
+        self.client.login(username='ana', password='prueba1234')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'recepcion/entrega_cobro.html')
+
+    def test_cliente_no_tiene_acceso_a_cobro(self):
+        self.client.login(username='maria', password='prueba1234')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 403)
+        
+    def test_tecnico_no_tiene_acceso_a_cobro(self):
+        self.client.login(username='luis', password='prueba1234')
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 403)
+
+    def test_post_exitoso_cambia_estado_y_metodo_pago(self):
+        self.client.login(username='ana', password='prueba1234')
+        response = self.client.post(self.url, {'metodo_pago': 'efectivo'})
+        
+        self.orden.refresh_from_db()
+        self.assertEqual(self.orden.estado, Estado.ENTREGADO)
+        self.assertEqual(self.orden.metodo_pago, 'efectivo')
+        self.assertRedirects(response, reverse('ticket', kwargs={'folio': self.orden.folio}))
+
+    def test_no_terminada_redirige(self):
+        self.orden.estado = Estado.ARREGLANDO
+        self.orden.save()
+        
+        self.client.login(username='ana', password='prueba1234')
+        response = self.client.get(self.url)
+        
+        self.assertRedirects(response, reverse('clientes'))
+        self.orden.refresh_from_db()
+        self.assertEqual(self.orden.estado, Estado.ARREGLANDO)

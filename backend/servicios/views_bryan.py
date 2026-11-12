@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.contrib.auth.views import PasswordResetView
 from django.urls import reverse_lazy
 
-from .models import OrdenServicio, Estado, TransicionInvalida, Cliente
+from .models import OrdenServicio, Estado, TransicionInvalida, Cliente, Calificacion
 from .permisos import solo_cliente, solo_recepcion
 from .forms_bryan import RecuperarPasswordForm, EntregaCobroForm
 
@@ -85,24 +85,26 @@ def entrega_cobro(request, folio):
 @solo_cliente
 def calificar_servicio(request, folio):
     """Permite al cliente calificar un servicio que ya fue entregado."""
-    # Filtramos para asegurar que la orden le pertenece al usuario logueado
     orden = get_object_or_404(OrdenServicio, folio=folio, equipo__cliente__usuario=request.user)
     
-    # Solo se puede calificar si el equipo ya fue entregado
     if orden.estado != Estado.ENTREGADO:
         messages.error(request, "Solo puedes calificar servicios que ya te han sido entregados.")
         return redirect('cliente_orden', folio=orden.folio)
         
+    if Calificacion.objects.filter(orden=orden).exists():
+        messages.info(request, 'Ya calificaste este servicio. ¡Gracias!')
+        return redirect('cliente_orden', folio=orden.folio)
+        
     if request.method == 'POST':
-        # Importamos el formulario localmente para no saturar los imports de arriba
         from .forms_bryan import CalificarServicioForm
         form = CalificarServicioForm(request.POST)
         
         if form.is_valid():
-            # Asumimos que el modelo OrdenServicio tiene campos de calificación
-            orden.calificacion = form.cleaned_data['calificacion']
-            orden.comentario_cliente = form.cleaned_data['comentario']
-            orden.save()
+            Calificacion.objects.create(
+                orden=orden,
+                puntuacion=form.cleaned_data['calificacion'],
+                comentario=form.cleaned_data['comentario'],
+            )
             
             messages.success(request, "¡Gracias por tus comentarios! Tu calificación ha sido guardada.")
             return redirect('cliente_orden', folio=orden.folio)

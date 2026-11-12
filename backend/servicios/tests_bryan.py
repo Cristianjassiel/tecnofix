@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.core import mail
 from django.contrib.auth.models import User, Group
 from .tests import BaseTecnoFix
-from .models import Estado, Cliente, Cotizacion
+from .models import Estado, Cliente, Cotizacion, Calificacion
 
 class AprobarCotizacionTests(BaseTecnoFix):
     def setUp(self):
@@ -141,8 +141,8 @@ class EntregaCobroTests(BaseTecnoFix):
         self.assertRedirects(response, reverse('clientes'))
         self.orden.refresh_from_db()
         self.assertEqual(self.orden.estado, Estado.ARREGLANDO)
-        
-        
+
+
 class CalificarServicioTests(BaseTecnoFix):
     def setUp(self):
         super().setUp()
@@ -151,7 +151,7 @@ class CalificarServicioTests(BaseTecnoFix):
         self.url = reverse('calificar', kwargs={'folio': self.orden.folio})
 
     def test_cliente_puede_ver_pantalla_calificar(self):
-        self.client.login(username='maria', password='prueba1234') # Maria es la dueña
+        self.client.login(username='maria', password='prueba1234')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'cliente/calificar.html')
@@ -185,7 +185,15 @@ class CalificarServicioTests(BaseTecnoFix):
             'comentario': 'Excelente servicio, muy rápido.'
         })
         
-        self.orden.refresh_from_db()
-        self.assertEqual(self.orden.calificacion, 5)
-        self.assertEqual(self.orden.comentario_cliente, 'Excelente servicio, muy rápido.')
+        calificacion = Calificacion.objects.get(orden=self.orden)
+        self.assertEqual(calificacion.puntuacion, 5)
+        self.assertEqual(calificacion.comentario, 'Excelente servicio, muy rápido.')
         self.assertRedirects(response, reverse('cliente_orden', kwargs={'folio': self.orden.folio}))
+
+    def test_no_se_puede_calificar_dos_veces(self):
+        Calificacion.objects.create(orden=self.orden, puntuacion=4)
+        self.client.login(username='maria', password='prueba1234')
+        response = self.client.post(self.url, {'calificacion': 5, 'comentario': 'otra vez'})
+        self.assertRedirects(response, reverse('cliente_orden', kwargs={'folio': self.orden.folio}))
+        self.assertEqual(Calificacion.objects.filter(orden=self.orden).count(), 1)
+        self.assertEqual(Calificacion.objects.get(orden=self.orden).puntuacion, 4)
